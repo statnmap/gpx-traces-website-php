@@ -21,5 +21,12 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       }
     ]
+  },
+  resolve: {
+    fallback: {
+      stream: false,
+      buffer: false,
+      timers: false
+    }
   }
 };
