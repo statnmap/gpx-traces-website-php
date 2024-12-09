@@ -1,7 +1,8 @@
 const path = require('path');
 
 module.exports = {
-  entry: './index.js',
+  entry: './scripts/map.js',
+  mode: 'production',
   output: {
     filename: 'main.js',
     path: path.resolve(__dirname, 'dist')
