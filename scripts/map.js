@@ -1,3 +1,6 @@
+import L from 'leaflet';
+import xml2js from 'xml2js';
+
 document.addEventListener('DOMContentLoaded', () => {
   const map = L.map('map').setView([51.505, -0.09], 13);
 
