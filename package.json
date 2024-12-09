@@ -2,7 +2,7 @@
   "name": "gpx-traces-website",
   "version": "1.0.0",
   "description": "A website to display GPX traces on an interactive map",
-  "main": "index.js",
+  "main": "scripts/map.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "start": "webpack serve --config webpack.config.js"
