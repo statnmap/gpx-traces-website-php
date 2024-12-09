@@ -1,4 +1,5 @@
 const path = require('path');
+const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
   entry: './scripts/map.js',
@@ -22,6 +23,16 @@ module.exports = {
       }
     ]
   },
+  plugins: [
+    new CopyWebpackPlugin({
+      patterns: [
+        { from: 'index.html', to: 'index.html' },
+        { from: 'styles.css', to: 'styles.css' },
+        { from: 'data/traces.json', to: 'data/traces.json' },
+        { from: 'gpx-files', to: 'gpx-files' }
+      ]
+    })
+  ],
   resolve: {
     fallback: {
       stream: false,
