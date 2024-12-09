@@ -19,23 +19,34 @@ function processGpxFiles() {
     files.forEach((file) => {
       if (path.extname(file) === '.gpx') {
         const filePath = path.join(gpxDir, file);
-        const gpxData = fs.readFileSync(filePath, 'utf8');
-
-        xml2js.parseString(gpxData, (err, result) => {
+        fs.readFile(filePath, 'utf8', (err, gpxData) => {
           if (err) {
-            console.error('Error parsing GPX file:', err);
+            console.error('Error reading GPX file:', err);
             return;
           }
 
-          const trace = {
-            name: result.gpx.trk[0].name[0],
-            category: getCategory(result.gpx.trk[0].name[0]),
-            coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
-          };
+          xml2js.parseString(gpxData, (err, result) => {
+            if (err) {
+              console.error('Error parsing GPX file:', err);
+              return;
+            }
 
-          traces.push(trace);
+            const trace = {
+              name: result.gpx.trk[0].name[0],
+              category: getCategory(result.gpx.trk[0].name[0]),
+              coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
+            };
 
-          fs.writeFileSync(outputFilePath, JSON.stringify({ traces }, null, 2));
+            traces.push(trace);
+
+            fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
+              if (err) {
+                console.error('Error writing output file:', err);
+                return;
+              }
+              console.log(`Successfully processed and saved trace: ${trace.name}`);
+            });
+          });
         });
       }
     });
