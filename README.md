@@ -15,7 +15,11 @@ To add a new GPX file, follow these steps:
 
 1. Place the new GPX file in the `gpx-files/` directory.
 2. Ensure the GPX file name includes the category ("sec", "humide", "boueux") to map it to the correct category.
-3. Run the pre-build script to process the GPX files and update the JSON file:
+3. Run the sanitize script to sanitize the GPX file names:
+   ```sh
+   node scripts/sanitize-gpx.js
+   ```
+4. Run the pre-build script to process the GPX files and update the JSON file:
    ```sh
    node scripts/process-gpx.js
    ```
@@ -32,7 +36,7 @@ The category is determined based on the GPX file name. Ensure the file name incl
 
 ## GitHub Actions
 
-The repository is configured to use GitHub Actions to build and deploy the website. The pre-build script is included in the build process to process the GPX files and update the JSON file whenever new GPX files are added or existing ones are modified.
+The repository is configured to use GitHub Actions to build and deploy the website. The sanitize script and pre-build script are included in the build process to sanitize the GPX file names, process the GPX files, and update the JSON file whenever new GPX files are added or existing ones are modified.
 
 ## Deployment
 

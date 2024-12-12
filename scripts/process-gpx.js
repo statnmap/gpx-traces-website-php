@@ -1,38 +1,12 @@
 const fs = require('fs');
 const path = require('path');
 const xml2js = require('xml2js');
+const { sanitizeGpxFileNames } = require('./sanitize-gpx');
 
 const gpxDir = path.join(__dirname, '../gpx-files');
 const outputFilePath = path.join(__dirname, '../data/traces.json');
 
 const categories = ['sec', 'humide', 'boueux'];
-
-function sanitizeGpxFileNames() {
-  fs.readdir(gpxDir, (err, files) => {
-    if (err) {
-      console.error('Error reading GPX directory:', err);
-      return;
-    }
-
-    files.forEach((file) => {
-      if (path.extname(file) === '.gpx') {
-        const sanitizedFileName = sanitizeFileName(path.basename(file, '.gpx')) + '.gpx';
-        const oldFilePath = path.join(gpxDir, file);
-        const newFilePath = path.join(gpxDir, sanitizedFileName);
-
-        if (oldFilePath !== newFilePath) {
-          fs.rename(oldFilePath, newFilePath, (err) => {
-            if (err) {
-              console.error('Error renaming file:', err);
-            } else {
-              console.log(`Renamed ${file} to ${sanitizedFileName}`);
-            }
-          });
-        }
-      }
-    });
-  });
-}
 
 function processGpxFiles() {
   const traces = [];
@@ -94,10 +68,6 @@ function getCoordinates(trkpts) {
     lat: parseFloat(trkpt.$.lat),
     lon: parseFloat(trkpt.$.lon)
   }));
-}
-
-function sanitizeFileName(fileName) {
-  return fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
 sanitizeGpxFileNames();
