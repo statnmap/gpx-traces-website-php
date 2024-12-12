@@ -31,10 +31,12 @@ document.addEventListener('DOMContentLoaded', () => {
             .setContent(trace.name)
             .openOn(map);
           polyline.bindPopup(popup);
+          polyline.setStyle({ color: 'red' });
         });
 
         polyline.on('mouseout', () => {
           map.closePopup();
+          polyline.setStyle({ color: getColor(trace.category) });
         });
 
         if (!traceLayers[trace.category]) {
