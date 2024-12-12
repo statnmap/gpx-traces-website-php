@@ -28,7 +28,7 @@ jobs:
         run: npm run build
 
       - name: Check Dependabot alerts
-        run: npx dependabot-core
+        run: npm audit
 
       - name: Deploy to GitHub Pages
         uses: peaceiris/actions-gh-pages@v3
