@@ -23,7 +23,6 @@
     "style-loader": "^2.0.0",
     "webpack": "^5.24.2",
     "webpack-cli": "^4.5.0",
-    "webpack-dev-server": "^5.2.0",
-    "dependabot-core": "^0.156.0"
+    "webpack-dev-server": "^5.2.0"
   }
 }
