@@ -37,3 +37,7 @@ The repository is configured to use GitHub Actions to build and deploy the websi
 ## Deployment
 
 The static website is hosted on GitHub Pages. The repository is configured to automatically build and deploy the website using GitHub Actions whenever changes are made to the GPX files or the codebase.
+
+## Trace Name
+
+The trace name (`trace.name`) used in the application is derived from the GPX filename (without extension). Ensure the GPX filename is descriptive and includes the category to map it correctly.
