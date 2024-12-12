@@ -25,6 +25,18 @@ document.addEventListener('DOMContentLoaded', () => {
           link.click();
         });
 
+        polyline.on('mouseover', (e) => {
+          const popup = L.popup()
+            .setLatLng(e.latlng)
+            .setContent(trace.name)
+            .openOn(map);
+          polyline.bindPopup(popup);
+        });
+
+        polyline.on('mouseout', () => {
+          map.closePopup();
+        });
+
         if (!traceLayers[trace.category]) {
           traceLayers[trace.category] = [];
         }

@@ -32,7 +32,7 @@ function processGpxFiles() {
             }
 
             const trace = {
-              name: result.gpx.trk[0].name[0],
+              name: sanitizeFileName(result.gpx.trk[0].name[0]),
               category: getCategory(result.gpx.trk[0].name[0]),
               coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
             };
@@ -67,6 +67,10 @@ function getCoordinates(trkpts) {
     lat: parseFloat(trkpt.$.lat),
     lon: parseFloat(trkpt.$.lon)
   }));
+}
+
+function sanitizeFileName(fileName) {
+  return fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
 processGpxFiles();
