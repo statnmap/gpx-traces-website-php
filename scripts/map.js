@@ -20,9 +20,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
         polyline.on('click', () => {
           const link = document.createElement('a');
-          link.href = `gpx-files/${trace.name}.gpx`;
-          link.download = `${trace.name}.gpx`;
+          link.href = `gpx-files/${sanitizeFileName(trace.name)}.gpx`;
+          link.download = `${sanitizeFileName(trace.name)}.gpx`;
           link.click();
+        });
+
+        polyline.on('mouseover', (e) => {
+          const popup = L.popup()
+            .setLatLng(e.latlng)
+            .setContent(trace.name)
+            .openOn(map);
+          polyline.bindPopup(popup);
+        });
+
+        polyline.on('mouseout', () => {
+          map.closePopup();
         });
 
         if (!traceLayers[trace.category]) {
@@ -55,5 +67,9 @@ document.addEventListener('DOMContentLoaded', () => {
       default:
         return 'gray';
     }
+  }
+
+  function sanitizeFileName(fileName) {
+    return fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
   }
 });
