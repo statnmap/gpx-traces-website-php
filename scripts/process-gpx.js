@@ -7,6 +7,33 @@ const outputFilePath = path.join(__dirname, '../data/traces.json');
 
 const categories = ['sec', 'humide', 'boueux'];
 
+function sanitizeGpxFileNames() {
+  fs.readdir(gpxDir, (err, files) => {
+    if (err) {
+      console.error('Error reading GPX directory:', err);
+      return;
+    }
+
+    files.forEach((file) => {
+      if (path.extname(file) === '.gpx') {
+        const sanitizedFileName = sanitizeFileName(path.basename(file, '.gpx')) + '.gpx';
+        const oldFilePath = path.join(gpxDir, file);
+        const newFilePath = path.join(gpxDir, sanitizedFileName);
+
+        if (oldFilePath !== newFilePath) {
+          fs.rename(oldFilePath, newFilePath, (err) => {
+            if (err) {
+              console.error('Error renaming file:', err);
+            } else {
+              console.log(`Renamed ${file} to ${sanitizedFileName}`);
+            }
+          });
+        }
+      }
+    });
+  });
+}
+
 function processGpxFiles() {
   const traces = [];
 
@@ -32,7 +59,7 @@ function processGpxFiles() {
             }
 
             const trace = {
-              name: sanitizeFileName(path.basename(file, '.gpx')),
+              name: path.basename(file, '.gpx'),
               category: getCategory(path.basename(file, '.gpx')),
               coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
             };
@@ -73,4 +100,5 @@ function sanitizeFileName(fileName) {
   return fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
+sanitizeGpxFileNames();
 processGpxFiles();
