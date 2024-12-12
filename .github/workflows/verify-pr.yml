@@ -1,12 +1,12 @@
-name: Deploy
+name: Verify PR
 
 on:
-  push:
+  pull_request:
     branches:
       - main
 
 jobs:
-  build:
+  verify:
     runs-on: ubuntu-latest
 
     steps:
@@ -26,12 +26,3 @@ jobs:
 
       - name: Build website
         run: npm run build
-
-      - name: Check Dependabot alerts
-        run: npx dependabot-core
-
-      - name: Deploy to GitHub Pages
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-          publish_dir: ./dist
