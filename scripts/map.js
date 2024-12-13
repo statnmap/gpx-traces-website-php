@@ -2,7 +2,7 @@ import L from 'leaflet';
 import xml2js from 'xml2js';
 
 document.addEventListener('DOMContentLoaded', () => {
-  const map = L.map('map').setView([47.325, -1.736], 13);
+  const map = L.map('map').setView([47.325, -1.736], 11);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
