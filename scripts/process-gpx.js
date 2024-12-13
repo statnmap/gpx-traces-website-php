@@ -35,6 +35,7 @@ function processGpxFiles() {
 
             const trace = {
               name: path.basename(file, '.gpx'),
+              sanitizedName: sanitizeFileName(path.basename(file, '.gpx')),
               category: getCategory(path.basename(file, '.gpx')),
               coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
             };

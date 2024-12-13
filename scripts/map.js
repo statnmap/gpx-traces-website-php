@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.name}.gpx" download>Download GPX</a>
+              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
