@@ -6,7 +6,7 @@ const { sanitizeGpxFileNames, sanitizeFileName } = require('./sanitize-gpx');
 const gpxDir = path.join(__dirname, '../gpx-files');
 const outputFilePath = path.join(__dirname, '../data/traces.json');
 
-const categories = ['sec', 'humide', 'boueux'];
+const categories = ['sec', 'inonde', 'boueux'];
 
 function processGpxFiles() {
   const traces = [];

@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     switch (category) {
       case 'sec':
         return 'blue';
-      case 'humide':
+      case 'inonde':
         return 'green';
       case 'boueux':
         return 'brown';
