@@ -1,6 +1,8 @@
 import L from 'leaflet';
 import xml2js from 'xml2js';
 
+let gpsMarker = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   const map = L.map('map').setView([47.325, -1.736], 11);
 
@@ -96,19 +98,34 @@ document.addEventListener('DOMContentLoaded', () => {
 
   function addCurrentPositionToMap(position) {
     const { latitude, longitude } = position.coords;
-    const marker = L.marker([latitude, longitude]).addTo(map);
-    marker.bindPopup('Vous êtes ici').openPopup();
+    gpsMarker = L.marker([latitude, longitude]).addTo(map);
+    gpsMarker.bindPopup('Vous êtes ici').openPopup();
+  }
+
+  function removeCurrentPositionFromMap() {
+    if (gpsMarker) {
+      map.removeLayer(gpsMarker);
+      gpsMarker = null;
+    }
   }
 
   function handleError(error) {
     console.error('Error getting current position:', error);
   }
 
-  document.getElementById('add-gps-position').addEventListener('click', () => {
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(addCurrentPositionToMap, handleError);
+  document.getElementById('add-gps-position').addEventListener('click', (event) => {
+    if (gpsMarker) {
+      removeCurrentPositionFromMap();
+      event.target.textContent = 'Afficher ma position GPS';
     } else {
-      alert('Geolocation is not supported by this browser.');
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition((position) => {
+          addCurrentPositionToMap(position);
+          event.target.textContent = 'Masquer ma position GPS';
+        }, handleError);
+      } else {
+        alert('Geolocation is not supported by this browser.');
+      }
     }
   });
 });
