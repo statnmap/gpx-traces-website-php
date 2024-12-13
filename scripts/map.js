@@ -83,7 +83,7 @@ document.addEventListener('DOMContentLoaded', () => {
     switch (category) {
       case 'sec':
         return 'blue';
-      case 'humide':
+      case 'inonde':
         return 'green';
       case 'boueux':
         return 'brown';
@@ -93,4 +93,22 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'black';
     }
   }
+
+  function addCurrentPositionToMap(position) {
+    const { latitude, longitude } = position.coords;
+    const marker = L.marker([latitude, longitude]).addTo(map);
+    marker.bindPopup('Vous êtes ici').openPopup();
+  }
+
+  function handleError(error) {
+    console.error('Error getting current position:', error);
+  }
+
+  document.getElementById('add-gps-position').addEventListener('click', () => {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(addCurrentPositionToMap, handleError);
+    } else {
+      alert('Geolocation is not supported by this browser.');
+    }
+  });
 });
