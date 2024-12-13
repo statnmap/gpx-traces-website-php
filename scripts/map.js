@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       traces.forEach(trace => {
         const coordinates = trace.coordinates.map(coord => [coord.lat, coord.lon]);
-        const polyline = L.polyline(coordinates, { color: getColor(trace.category) }).addTo(map);
+        const polyline = L.polyline(coordinates, { color: getColor(trace.category), weight: 10 }).addTo(map);
 
         polyline.on('click', (e) => {
           const popupContent = `
@@ -39,11 +39,25 @@ document.addEventListener('DOMContentLoaded', () => {
             .setContent(tooltipContent)
             .openOn(map);
           polyline.bindTooltip(tooltip);
-          polyline.setStyle({ color: 'red' });
+          polyline.setStyle({ color: 'red', weight: 15 });
         });
 
         polyline.on('mouseout', () => {
-          polyline.setStyle({ color: getColor(trace.category) });
+          polyline.setStyle({ color: getColor(trace.category), weight: 10 });
+        });
+
+        polyline.on('touchstart', (e) => {
+          const popupContent = `
+            <div>
+              <strong>${trace.name}</strong><br>
+              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
+            </div>
+          `;
+          const popup = L.popup()
+            .setLatLng(e.latlng)
+            .setContent(popupContent)
+            .openOn(map);
+          polyline.bindPopup(popup);
         });
 
         if (!traceLayers[trace.category]) {
