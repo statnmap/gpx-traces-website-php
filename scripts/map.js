@@ -66,8 +66,10 @@ document.addEventListener('DOMContentLoaded', () => {
         return 'green';
       case 'boueux':
         return 'brown';
-      default:
+      case 'autres':
         return 'gray';
+      default:
+        return 'black';
     }
   }
 });

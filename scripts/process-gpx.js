@@ -60,7 +60,7 @@ function getCategory(name) {
       return category;
     }
   }
-  return 'unknown';
+  return 'autres';
 }
 
 function getCoordinates(trkpts) {
