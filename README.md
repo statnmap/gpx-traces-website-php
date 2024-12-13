@@ -42,6 +42,13 @@ The repository is configured to use GitHub Actions to build and deploy the websi
 
 The static website is hosted on GitHub Pages. The repository is configured to automatically build and deploy the website using GitHub Actions whenever changes are made to the GPX files or the codebase.
 
+To add your current GPS position on the map when using a smartphone, follow these steps:
+
+1. Open the website on your smartphone.
+2. Click the "Add Current GPS Position" button.
+3. Allow the website to access your location if prompted.
+4. Your current GPS position will be added to the map with a marker.
+
 ## Trace Name
 
 The trace name (`trace.name`) used in the application is derived from the GPX filename (without extension). Ensure the GPX filename is descriptive and includes the category to map it correctly.
