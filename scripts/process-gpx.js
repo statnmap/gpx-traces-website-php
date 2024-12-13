@@ -71,4 +71,5 @@ function getCoordinates(trkpts) {
   }));
 }
 
+sanitizeGpxFileNames();
 processGpxFiles();
