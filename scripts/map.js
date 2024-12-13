@@ -18,11 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
         const coordinates = trace.coordinates.map(coord => [coord.lat, coord.lon]);
         const polyline = L.polyline(coordinates, { color: getColor(trace.category) }).addTo(map);
 
-        polyline.on('click', () => {
-          const link = document.createElement('a');
-          link.href = `gpx-files/${trace.name}.gpx`;
-          link.download = `${trace.name}.gpx`;
-          link.click();
+        polyline.on('click', (e) => {
+          const popupContent = `
+            <div>
+              <strong>${trace.name}</strong><br>
+              <a href="gpx-files/${trace.name}.gpx" download="${trace.name}.gpx">Download GPX</a>
+            </div>
+          `;
+          const popup = L.popup()
+            .setLatLng(e.latlng)
+            .setContent(popupContent)
+            .openOn(map);
+          polyline.bindPopup(popup);
         });
 
         polyline.on('mouseover', (e) => {
