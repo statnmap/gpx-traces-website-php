@@ -22,7 +22,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.name}.gpx" download="${trace.name}.gpx">Download GPX</a>
+              <a href="gpx-files/${trace.name}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
@@ -33,16 +33,16 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         polyline.on('mouseover', (e) => {
-          const popup = L.popup()
+          const tooltipContent = `<strong>${trace.name}</strong>`;
+          const tooltip = L.tooltip()
             .setLatLng(e.latlng)
-            .setContent(trace.name)
+            .setContent(tooltipContent)
             .openOn(map);
-          polyline.bindPopup(popup);
+          polyline.bindTooltip(tooltip);
           polyline.setStyle({ color: 'red' });
         });
 
         polyline.on('mouseout', () => {
-          map.closePopup();
           polyline.setStyle({ color: getColor(trace.category) });
         });
 
