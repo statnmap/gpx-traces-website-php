@@ -7,7 +7,7 @@ function sanitizeGpxFileNames() {
   fs.readdir(gpxDir, (err, files) => {
     if (err) {
       console.error('Error reading GPX directory:', err);
-      return;
+      process.exit(1);
     }
 
     files.forEach((file) => {
@@ -20,6 +20,7 @@ function sanitizeGpxFileNames() {
           fs.rename(oldFilePath, newFilePath, (err) => {
             if (err) {
               console.error('Error renaming file:', err);
+              process.exit(1);
             } else {
               console.log(`Renamed ${file} to ${sanitizedFileName}`);
             }
@@ -34,4 +35,4 @@ function sanitizeFileName(fileName) {
   return fileName.replace(/[^a-z0-9]/gi, '_').toLowerCase();
 }
 
-module.exports = { sanitizeGpxFileNames };
+module.exports = { sanitizeGpxFileNames, sanitizeFileName };
