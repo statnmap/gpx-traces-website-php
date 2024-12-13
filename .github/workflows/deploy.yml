@@ -21,9 +21,6 @@ jobs:
       - name: Install dependencies
         run: npm install
 
-      - name: Run sanitize script
-        run: node scripts/sanitize-gpx.js
-
       - name: Run pre-build script
         run: node scripts/process-gpx.js
 

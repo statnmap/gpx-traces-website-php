@@ -24,9 +24,6 @@ jobs:
       - name: Check Dependabot alerts
         run: npm audit
 
-      - name: Run sanitize script
-        run: node scripts/sanitize-gpx.js
-
       - name: Run pre-build script
         run: node scripts/process-gpx.js
 
