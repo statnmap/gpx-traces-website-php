@@ -16,13 +16,10 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v2
         with:
-          node-version: '16'
+          node-version: '18'
 
       - name: Install dependencies
         run: npm install
-
-      - name: Run sanitize script
-        run: node scripts/sanitize-gpx.js
 
       - name: Run pre-build script
         run: node scripts/process-gpx.js

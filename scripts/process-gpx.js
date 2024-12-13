@@ -1,7 +1,7 @@
 const fs = require('fs');
 const path = require('path');
 const xml2js = require('xml2js');
-const { sanitizeGpxFileNames } = require('./sanitize-gpx');
+const { sanitizeGpxFileNames, sanitizeFileName } = require('./sanitize-gpx');
 
 const gpxDir = path.join(__dirname, '../gpx-files');
 const outputFilePath = path.join(__dirname, '../data/traces.json');
@@ -14,22 +14,23 @@ function processGpxFiles() {
   fs.readdir(gpxDir, (err, files) => {
     if (err) {
       console.error('Error reading GPX directory:', err);
-      return;
+      process.exit(1);
     }
 
     files.forEach((file) => {
       if (path.extname(file) === '.gpx') {
-        const filePath = path.join(gpxDir, file);
+        const sanitizedFileName = sanitizeFileName(path.basename(file, '.gpx')) + '.gpx';
+        const filePath = path.join(gpxDir, sanitizedFileName);
         fs.readFile(filePath, 'utf8', (err, gpxData) => {
           if (err) {
             console.error('Error reading GPX file:', err);
-            return;
+            process.exit(1);
           }
 
           xml2js.parseString(gpxData, (err, result) => {
             if (err) {
               console.error('Error parsing GPX file:', err);
-              return;
+              process.exit(1);
             }
 
             const trace = {
@@ -43,7 +44,7 @@ function processGpxFiles() {
             fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
               if (err) {
                 console.error('Error writing output file:', err);
-                return;
+                process.exit(1);
               }
               console.log(`Successfully processed and saved trace: ${trace.name}`);
             });
