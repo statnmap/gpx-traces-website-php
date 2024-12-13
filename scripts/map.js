@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       traces.forEach(trace => {
         const coordinates = trace.coordinates.map(coord => [coord.lat, coord.lon]);
-        const polyline = L.polyline(coordinates, { color: getColor(trace.category), weight: 10 }).addTo(map);
+        const polyline = L.polyline(coordinates, { color: getColor(trace.category), weight: 8 }).addTo(map);
 
         polyline.on('click', (e) => {
           const popupContent = `
@@ -39,11 +39,11 @@ document.addEventListener('DOMContentLoaded', () => {
             .setContent(tooltipContent)
             .openOn(map);
           polyline.bindTooltip(tooltip);
-          polyline.setStyle({ color: 'red', weight: 15 });
+          polyline.setStyle({ color: 'red', weight: 12 });
         });
 
         polyline.on('mouseout', () => {
-          polyline.setStyle({ color: getColor(trace.category), weight: 10 });
+          polyline.setStyle({ color: getColor(trace.category), weight: 8 });
         });
 
         polyline.on('touchstart', (e) => {
