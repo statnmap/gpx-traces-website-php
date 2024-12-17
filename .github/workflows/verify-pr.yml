@@ -25,7 +25,7 @@ jobs:
 
       - name: Authenticate with Google Drive
         run: |
-          echo "${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}" > credentials.json
+          echo '${{ secrets.GOOGLE_DRIVE_CREDENTIALS }}' > credentials.json
 
       - name: Install googleapis library
         run: npm install googleapis
