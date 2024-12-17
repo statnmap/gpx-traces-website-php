@@ -71,6 +71,8 @@ async function processGpxFiles() {
 
       traces.push(trace);
 
+      ensureDataDirectoryExists();
+
       fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
         if (err) {
           console.error('Error writing output file:', err);
@@ -96,6 +98,13 @@ function getCoordinates(trkpts) {
     lat: parseFloat(trkpt.$.lat),
     lon: parseFloat(trkpt.$.lon)
   }));
+}
+
+function ensureDataDirectoryExists() {
+  const dataDir = path.join(__dirname, '../data');
+  if (!fs.existsSync(dataDir)) {
+    fs.mkdirSync(dataDir);
+  }
 }
 
 processGpxFiles();
