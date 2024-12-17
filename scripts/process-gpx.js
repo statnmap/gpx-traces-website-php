@@ -9,7 +9,7 @@ const outputFilePath = path.join(__dirname, '../data/traces.json');
 const categories = ['sec', 'inonde', 'boueux'];
 
 const auth = new google.auth.GoogleAuth({
-  keyFile: path.join(__dirname, '../credentials.json'),
+  credentials: JSON.parse(process.env.GOOGLE_DRIVE_CREDENTIALS),
   scopes: ['https://www.googleapis.com/auth/drive.readonly']
 });
 
