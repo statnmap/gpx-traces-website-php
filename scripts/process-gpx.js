@@ -21,7 +21,7 @@ const drive = google.drive({
 async function listGpxFiles() {
   const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
   const res = await drive.files.list({
-    q: `'${folderId}' in parents` and mimeType='application/gpx+xml',
+    q: `'${folderId}' in parents and mimeType='application/gpx+xml'`,
     fields: 'files(id, name)'
   });
   console.log('All files found:', res.data.files);
