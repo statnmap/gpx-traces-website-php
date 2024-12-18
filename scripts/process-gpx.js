@@ -52,6 +52,12 @@ async function processGpxFiles() {
   const traces = [];
   const files = await listGpxFiles();
 
+  // Delete the existing traces.json file if it exists
+  if (fs.existsSync(outputFilePath)) {
+    fs.unlinkSync(outputFilePath);
+    console.log('Deleted existing traces.json file');
+  }
+
   for (const file of files) {
     const gpxData = await downloadGpxFile(file.id);
     const sanitizedFileName = sanitizeFileName(path.basename(file.name, '.gpx')) + '.gpx';
