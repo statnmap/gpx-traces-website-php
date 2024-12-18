@@ -79,7 +79,7 @@ async function processGpxFiles() {
       const trace = {
         name: path.basename(file.name, '.gpx'),
         sanitizedName: sanitizeFileName(path.basename(file.name, '.gpx')),
-        category: getCategory(path.basename(file.name, '.gpx')),
+        category: getCategory(sanitizeFileName(path.basename(file.name, '.gpx'))),
         coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
       };
 
@@ -107,18 +107,18 @@ async function processGpxFiles() {
   });
 }
 
-function getCategory(name) {
-  if (name.startsWith("Parcours")) {
+function getCategory(sanitizedName) {
+  if (sanitizedName.startsWith("parcours")) {
     return 'parcours';
-  } else if (name.includes("chemin") && name.includes("boueux")) {
+  } else if (sanitizedName.includes("chemin") && sanitizedName.includes("boueux")) {
     return 'chemin_boueux';
-  } else if (name.includes("chemin") && name.includes("inondable")) {
+  } else if (sanitizedName.includes("chemin") && sanitizedName.includes("inondable")) {
     return 'chemin_inondable';
-  } else if (name.includes("danger")) {
+  } else if (sanitizedName.includes("danger")) {
     return 'danger';
   } else {
     for (const category of categories) {
-      if (name.toLowerCase().includes(category)) {
+      if (sanitizedName.toLowerCase().includes(category)) {
         return category;
       }
     }
