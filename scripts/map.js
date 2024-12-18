@@ -24,7 +24,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
+              <a href="https://github.com/statnmap/gpx-traces-website/blob/gh-pages/gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
@@ -52,7 +52,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
+              <a href="https://github.com/statnmap/gpx-traces-website/blob/gh-pages/gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
