@@ -5,6 +5,7 @@ const { google } = require('googleapis');
 const { sanitizeFileName } = require('./sanitize-gpx');
 
 const outputFilePath = path.join(__dirname, '../data/traces.json');
+const gpxFilesDir = path.join(__dirname, '../gpx-files');
 
 const categories = ['parcours', 'chemin_boueux', 'chemin_inondable', 'danger'];
 
@@ -28,7 +29,7 @@ async function listGpxFiles() {
   return res.data.files;
 }
 
-async function downloadGpxFile(fileId) {
+async function downloadGpxFile(fileId, fileName) {
   const res = await drive.files.get({
     fileId: fileId,
     alt: 'media'
@@ -40,6 +41,10 @@ async function downloadGpxFile(fileId) {
       data += chunk;
     });
     res.data.on('end', () => {
+      const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
+      const filePath = path.join(gpxFilesDir, sanitizedFileName);
+      ensureGpxFilesDirectoryExists();
+      fs.writeFileSync(filePath, data);
       resolve(data);
     });
     res.data.on('error', err => {
@@ -52,6 +57,9 @@ async function processGpxFiles() {
   const traces = [];
   const files = await listGpxFiles();
 
+  // Clean content of gpx-files directory before downloading
+  cleanGpxFilesDirectory();
+
   // Delete the existing traces.json file if it exists
   if (fs.existsSync(outputFilePath)) {
     fs.unlinkSync(outputFilePath);
@@ -59,7 +67,7 @@ async function processGpxFiles() {
   }
 
   for (const file of files) {
-    const gpxData = await downloadGpxFile(file.id);
+    const gpxData = await downloadGpxFile(file.id, file.name);
     const sanitizedFileName = sanitizeFileName(path.basename(file.name, '.gpx')) + '.gpx';
 
     xml2js.parseString(gpxData, (err, result) => {
@@ -88,6 +96,15 @@ async function processGpxFiles() {
       });
     });
   }
+
+  // Check if all trace files exist in the gpx-files directory
+  traces.forEach(trace => {
+    const filePath = path.join(gpxFilesDir, `${trace.sanitizedName}.gpx`);
+    if (!fs.existsSync(filePath)) {
+      console.error(`File not found: ${filePath}`);
+      process.exit(1);
+    }
+  });
 }
 
 function getCategory(name) {
@@ -120,6 +137,21 @@ function ensureDataDirectoryExists() {
   const dataDir = path.join(__dirname, '../data');
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir);
+  }
+}
+
+function ensureGpxFilesDirectoryExists() {
+  if (!fs.existsSync(gpxFilesDir)) {
+    fs.mkdirSync(gpxFilesDir);
+  }
+}
+
+function cleanGpxFilesDirectory() {
+  if (fs.existsSync(gpxFilesDir)) {
+    fs.readdirSync(gpxFilesDir).forEach((file) => {
+      const filePath = path.join(gpxFilesDir, file);
+      fs.unlinkSync(filePath);
+    });
   }
 }
 
