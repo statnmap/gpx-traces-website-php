@@ -6,7 +6,7 @@ const { sanitizeFileName } = require('./sanitize-gpx');
 
 const outputFilePath = path.join(__dirname, '../data/traces.json');
 
-const categories = ['sec', 'inonde', 'boueux'];
+const categories = ['parcours', 'chemin_boueux', 'chemin_inondable', 'danger'];
 
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(__dirname, '../credentials.json'),
@@ -85,9 +85,19 @@ async function processGpxFiles() {
 }
 
 function getCategory(name) {
-  for (const category of categories) {
-    if (name.toLowerCase().includes(category)) {
-      return category;
+  if (name.startsWith("Parcours")) {
+    return 'parcours';
+  } else if (name.includes("chemin") && name.includes("boueux")) {
+    return 'chemin_boueux';
+  } else if (name.includes("chemin") && name.includes("inondable")) {
+    return 'chemin_inondable';
+  } else if (name.includes("danger")) {
+    return 'danger';
+  } else {
+    for (const category of categories) {
+      if (name.toLowerCase().includes(category)) {
+        return category;
+      }
     }
   }
   return 'autres';

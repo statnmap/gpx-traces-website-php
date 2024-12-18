@@ -92,13 +92,19 @@ To add a new GPX file, follow these steps:
 
 ## Categories
 
-The GPX traces are categorized into three categories:
+The GPX traces are categorized into five categories:
 
-- `sec`: Dry traces
-- `inonde`: Flooded traces
-- `boueux`: Muddy traces
+- `parcours`: Files starting with "Parcours"
+- `chemin_boueux`: Files containing "chemin" and "boueux"
+- `chemin_inondable`: Files containing "chemin" and "inondable"
+- `danger`: Files containing "danger"
+- `autres`: Other files
 
 The category is determined based on the GPX file name. Ensure the file name includes the category to map it correctly.
+
+To update the categories, modify the `getCategory` function in the `scripts/process-gpx.js` file.
+
+To update the effect of new categories on color and weight, modify the `getColor` and `getWeight` functions in the `scripts/map.js` file.
 
 ## GitHub Actions
 

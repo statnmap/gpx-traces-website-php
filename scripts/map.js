@@ -18,7 +18,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
       traces.forEach(trace => {
         const coordinates = trace.coordinates.map(coord => [coord.lat, coord.lon]);
-        const polyline = L.polyline(coordinates, { color: getColor(trace.category), weight: 8 }).addTo(map);
+        const polyline = L.polyline(coordinates, { color: getColor(trace.category), weight: getWeight(trace.category) }).addTo(map);
 
         polyline.on('click', (e) => {
           const popupContent = `
@@ -45,7 +45,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
 
         polyline.on('mouseout', () => {
-          polyline.setStyle({ color: getColor(trace.category), weight: 8 });
+          polyline.setStyle({ color: getColor(trace.category), weight: getWeight(trace.category) });
         });
 
         polyline.on('touchstart', (e) => {
@@ -82,17 +82,30 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
   function getColor(category) {
-    switch (category) {
-      case 'sec':
-        return 'blue';
-      case 'inonde':
-        return 'green';
-      case 'boueux':
-        return 'brown';
-      case 'autres':
-        return 'gray';
-      default:
-        return 'black';
+    if (category === 'parcours') {
+      return '#35978f';
+    } else if (category === 'chemin_boueux') {
+      return '#542788';
+    } else if (category === 'chemin_inondable') {
+      return '#fdb863';
+    } else if (category === 'danger') {
+      return '#b30000';
+    } else {
+      return 'pink';
+    }
+  }
+
+  function getWeight(category) {
+    if (category === 'parcours') {
+      return 8;
+    } else if (category === 'chemin_boueux') {
+      return 10;
+    } else if (category === 'chemin_inondable') {
+      return 10;
+    } else if (category === 'danger') {
+      return 11;
+    } else {
+      return 8;
     }
   }
 
