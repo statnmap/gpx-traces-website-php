@@ -31,7 +31,8 @@ module.exports = {
       patterns: [
         { from: 'index.html', to: 'index.html' },
         { from: 'styles.css', to: 'styles.css' },
-        { from: 'data/traces.json', to: 'data/traces.json' }
+        { from: 'data/traces.json', to: 'data/traces.json' },
+        { from: 'gpx-files', to: 'gpx-files' }
       ]
     })
   ],
