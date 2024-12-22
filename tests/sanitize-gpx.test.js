@@ -27,8 +27,8 @@ describe('sanitizeGpxFileNames', () => {
     ];
 
     const expectedSanitizedFilenames = [
-      'eeacooiiuuuuaaeeeyn.gpx',
-      'eeacooiiuuuuaaeeeyn.gpx'
+      'eeacooiiuuuaaeeyn.gpx',
+      'eeacooiiuuuaaeeyn.gpx'
     ];
 
     filenames.forEach((filename, index) => {
