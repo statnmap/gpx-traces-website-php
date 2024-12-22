@@ -155,4 +155,10 @@ function cleanGpxFilesDirectory() {
   }
 }
 
+module.exports = {
+  processGpxFiles,
+  getCategory,
+  getCoordinates
+};
+
 processGpxFiles();

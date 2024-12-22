@@ -1,5 +1,7 @@
 # GPX Traces Map
 
+![CI](https://github.com/statnmap/gpx-traces-website/workflows/Verify%20PR/badge.svg)
+
 This repository contains the necessary files and code to use GPX files stored in the repository as input and show the GPX traces on an interactive map.
 
 ## Directory Structure
