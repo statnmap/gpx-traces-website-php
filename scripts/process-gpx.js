@@ -43,6 +43,7 @@ async function downloadGpxFile(fileId, fileName) {
     const srcPath = path.join(exampleGpxFilesDir, fileName);
     const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
     const destPath = path.join(gpxFilesDir, sanitizedFileName);
+    ensureGpxFilesDirectoryExists();
     fs.copyFileSync(srcPath, destPath);
     return fs.readFileSync(destPath, 'utf8');
   } else {
