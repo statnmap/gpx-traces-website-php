@@ -45,7 +45,7 @@ async function downloadGpxFile(fileId, fileName) {
     const destPath = path.join(gpxFilesDir, sanitizedFileName);
     ensureGpxFilesDirectoryExists();
     fs.copyFileSync(srcPath, destPath);
-    return fs.readFileSync(destPath, 'utf8');
+    return destPath;
   } else {
     const res = await drive.files.get({
       fileId: fileId,
@@ -62,7 +62,7 @@ async function downloadGpxFile(fileId, fileName) {
         const filePath = path.join(gpxFilesDir, sanitizedFileName);
         ensureGpxFilesDirectoryExists();
         fs.writeFileSync(filePath, data);
-        resolve(data);
+        resolve(filePath);
       });
       res.data.on('error', err => {
         reject(err);
@@ -85,7 +85,8 @@ async function processGpxFiles() {
   }
 
   for (const file of files) {
-    const gpxData = await downloadGpxFile(file.id, file.name);
+    const filePath = await downloadGpxFile(file.id, file.name);
+    const gpxData = fs.readFileSync(filePath, 'utf8');
     const sanitizedFileName = sanitizeFileName(path.basename(file.name, '.gpx')) + '.gpx';
 
     xml2js.parseString(gpxData, (err, result) => {
