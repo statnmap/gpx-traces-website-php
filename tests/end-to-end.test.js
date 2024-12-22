@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'test';
+
 const { processGpxFiles } = require('../scripts/process-gpx');
 const { sanitizeGpxFileNames } = require('../scripts/sanitize-gpx');
 const fs = require('fs');
