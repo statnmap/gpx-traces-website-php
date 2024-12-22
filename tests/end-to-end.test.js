@@ -55,9 +55,6 @@ describe('End-to-end filename processing', () => {
   });
 
   test('sanitizes, categorizes, processes, and displays the filename correctly', async () => {
-    // Sanitize GPX file names
-    sanitizeGpxFileNames();
-
     // Process GPX files
     await processGpxFiles();
 
@@ -68,6 +65,7 @@ describe('End-to-end filename processing', () => {
     expect(fs.existsSync(path.join(gpxFilesDir, sanitizedFileName2))).toBe(true);
 
     // Check the traces.json file
+    expect(fs.existsSync(outputFilePath)).toBe(true);
     const tracesJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
     expect(tracesJson.traces).toHaveLength(2);
 
