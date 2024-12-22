@@ -40,7 +40,7 @@ async function listGpxFiles() {
 }
 
 async function downloadGpxFile(fileId, fileName) {
-  console.log('Starting downloadGpxFile function');
+  console.log('Starting downloadGpxFile:', fileName);
   if (process.env.NODE_ENV === 'test') {
     const srcPath = path.join(exampleGpxFilesDir, fileName);
     const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
