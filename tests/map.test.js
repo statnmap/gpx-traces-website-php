@@ -50,13 +50,13 @@ describe('getWeight', () => {
 });
 
 describe('processGpxFiles', () => {
-  const gpxFilesDir = path.join(__dirname, '../gpx-files');
+  const exampleGpxFilesDir = path.join(__dirname, '../example-gpx');
   const outputFilePath = path.join(__dirname, '../data/traces.json');
 
   beforeAll(() => {
-    // Ensure the gpx-files directory exists
-    if (!fs.existsSync(gpxFilesDir)) {
-      fs.mkdirSync(gpxFilesDir);
+    // Ensure the example-gpx directory exists
+    if (!fs.existsSync(exampleGpxFilesDir)) {
+      fs.mkdirSync(exampleGpxFilesDir);
     }
 
     // Create sample GPX files for testing
@@ -71,7 +71,7 @@ describe('processGpxFiles', () => {
         </trk>
       </gpx>
     `;
-    fs.writeFileSync(path.join(gpxFilesDir, 'Sample Track.gpx'), sampleGpxContent1);
+    fs.writeFileSync(path.join(exampleGpxFilesDir, 'Sample Track.gpx'), sampleGpxContent1);
 
     const sampleGpxContent2 = `
       <gpx>
@@ -84,13 +84,13 @@ describe('processGpxFiles', () => {
         </trk>
       </gpx>
     `;
-    fs.writeFileSync(path.join(gpxFilesDir, 'Chemin boueux - La valinière.gpx'), sampleGpxContent2);
+    fs.writeFileSync(path.join(exampleGpxFilesDir, 'Chemin boueux - La valinière.gpx'), sampleGpxContent2);
   });
 
   afterAll(() => {
-    // Clean up the gpx-files directory and traces.json file
-    fs.readdirSync(gpxFilesDir).forEach((file) => {
-      fs.unlinkSync(path.join(gpxFilesDir, file));
+    // Clean up the example-gpx directory and traces.json file
+    fs.readdirSync(exampleGpxFilesDir).forEach((file) => {
+      fs.unlinkSync(path.join(exampleGpxFilesDir, file));
     });
     if (fs.existsSync(outputFilePath)) {
       fs.unlinkSync(outputFilePath);
