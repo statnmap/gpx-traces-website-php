@@ -106,18 +106,10 @@ async function processGpxFiles() {
       };
 
       traces.push(trace);
-
-      ensureDataDirectoryExists();
-
-      fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
-        if (err) {
-          console.error('Error writing output file:', err);
-          process.exit(1);
-        }
-        console.log(`Successfully processed and saved trace: ${trace.name}`);
-      });
     });
   }
+
+  writeTracesJson(traces);
 
   // Check if all trace files exist in the gpx-files directory
   traces.forEach(trace => {
@@ -125,6 +117,20 @@ async function processGpxFiles() {
     if (!fs.existsSync(filePath)) {
       console.error(`File not found: ${filePath}`);
       process.exit(1);
+    }
+  });
+}
+
+function writeTracesJson(traces) {
+  ensureDataDirectoryExists();
+  fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
+    if (err) {
+      console.error('Error writing output file:', err);
+      process.exit(1);
+    }
+    console.log('Successfully wrote traces.json file');
+    if (process.env.NODE_ENV === 'test') {
+      console.log('traces content before JSON', traces)
     }
   });
 }
