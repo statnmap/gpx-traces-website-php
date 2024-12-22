@@ -21,6 +21,7 @@ const drive = google.drive({
 });
 
 async function listGpxFiles() {
+  console.log('Starting listGpxFile function');
   if (process.env.NODE_ENV === 'test') {
     const exampleFiles = fs.readdirSync(exampleGpxFilesDir)
       .filter(file => path.extname(file) === '.gpx')
@@ -39,6 +40,7 @@ async function listGpxFiles() {
 }
 
 async function downloadGpxFile(fileId, fileName) {
+  console.log('Starting downloadGpxFile function');
   if (process.env.NODE_ENV === 'test') {
     const srcPath = path.join(exampleGpxFilesDir, fileName);
     const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
@@ -72,6 +74,7 @@ async function downloadGpxFile(fileId, fileName) {
 }
 
 async function processGpxFiles() {
+  console.log('Starting processGpxFile function');
   const traces = [];
   const files = await listGpxFiles();
 
