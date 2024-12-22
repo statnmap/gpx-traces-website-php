@@ -88,50 +88,63 @@ async function processGpxFiles() {
   }
 
   for (const file of files) {
-    const filePath = await downloadGpxFile(file.id, file.name);
-    const gpxData = fs.readFileSync(filePath, 'utf8');
-    const sanitizedFileName = sanitizeFileName(path.basename(file.name, '.gpx')) + '.gpx';
+    try {
+      const filePath = await downloadGpxFile(file.id, file.name);
+      const gpxData = fs.readFileSync(filePath, 'utf8');
+      const sanitizedFileName = sanitizeFileName(path.basename(file.name, '.gpx')) + '.gpx';
 
-    xml2js.parseString(gpxData, (err, result) => {
-      if (err) {
-        console.error('Error parsing GPX file:', err);
-        process.exit(1);
-      }
+      xml2js.parseString(gpxData, (err, result) => {
+        if (err) {
+          console.error('Error parsing GPX file:', err);
+          throw err;
+        }
 
-      const trace = {
-        name: path.basename(file.name, '.gpx'),
-        sanitizedName: sanitizeFileName(path.basename(file.name, '.gpx')),
-        category: getCategory(sanitizeFileName(path.basename(file.name, '.gpx'))),
-        coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
-      };
+        const trace = {
+          name: path.basename(file.name, '.gpx'),
+          sanitizedName: sanitizeFileName(path.basename(file.name, '.gpx')),
+          category: getCategory(sanitizeFileName(path.basename(file.name, '.gpx'))),
+          coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
+        };
 
-      traces.push(trace);
-    });
+        traces.push(trace);
+      });
+    } catch (error) {
+      console.error('Error processing file:', file.name, error);
+      throw error;
+    }
   }
 
-  writeTracesJson(traces);
+  try {
+    await writeTracesJson(traces);
+  } catch (error) {
+    console.error('Error writing traces.json:', error);
+    throw error;
+  }
 
   // Check if all trace files exist in the gpx-files directory
   traces.forEach(trace => {
     const filePath = path.join(gpxFilesDir, `${trace.sanitizedName}.gpx`);
     if (!fs.existsSync(filePath)) {
       console.error(`File not found: ${filePath}`);
-      process.exit(1);
     }
   });
 }
 
-function writeTracesJson(traces) {
+async function writeTracesJson(traces) {
   ensureDataDirectoryExists();
-  fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
-    if (err) {
-      console.error('Error writing output file:', err);
-      process.exit(1);
-    }
-    console.log('Successfully wrote traces.json file');
     if (process.env.NODE_ENV === 'test') {
       console.log('traces content before JSON', traces)
     }
+
+  return new Promise((resolve, reject) => {
+    fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('Successfully wrote traces.json file');
+        resolve();
+      }
+    });
   });
 }
 
