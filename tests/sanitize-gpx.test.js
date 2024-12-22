@@ -19,4 +19,21 @@ describe('sanitizeGpxFileNames', () => {
       expect(sanitizedFilename).toBe(expectedSanitizedFilenames[index]);
     });
   });
+
+  test('sanitizes filenames by replacing accented characters with unaccented equivalents', () => {
+    const filenames = [
+      'éèàçôöîïùûüâäêëÿñ.gpx',
+      'ÉÈÀÇÔÖÎÏÙÛÜÂÄÊËŸÑ.gpx'
+    ];
+
+    const expectedSanitizedFilenames = [
+      'eeacooiiuuuuaaeeeyn.gpx',
+      'eeacooiiuuuuaaeeeyn.gpx'
+    ];
+
+    filenames.forEach((filename, index) => {
+      const sanitizedFilename = sanitizeFileName(filename.replace('.gpx', '')) + '.gpx';
+      expect(sanitizedFilename).toBe(expectedSanitizedFilenames[index]);
+    });
+  });
 });
