@@ -178,3 +178,19 @@ To run the script locally while defining the `GOOGLE_DRIVE_FOLDER_ID` and `GOOGL
    ```
 
 This will process the GPX files from the specified Google Drive folder and update the `data/traces.json` file.
+
+## Running Unit Tests with Local GPX Files
+
+To run the unit tests using local GPX files stored in the `gpx-files` directory, follow these steps:
+
+1. Ensure the `gpx-files` directory contains the necessary GPX files for testing.
+2. Set the `NODE_ENV` environment variable to `test` before running the tests:
+   ```sh
+   export NODE_ENV=test
+   ```
+3. Run the tests using the following command:
+   ```sh
+   npm test
+   ```
+
+This will use the local GPX files from the `gpx-files` directory instead of downloading them from Google Drive during the unit tests.

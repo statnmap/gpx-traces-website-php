@@ -1,3 +1,5 @@
+process.env.NODE_ENV = 'test';
+
 const { getCategory, getCoordinates } = require('../scripts/process-gpx');
 
 describe('getCategory', () => {

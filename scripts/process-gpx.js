@@ -20,37 +20,48 @@ const drive = google.drive({
 });
 
 async function listGpxFiles() {
-  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-  const res = await drive.files.list({
-    q: `'${folderId}' in parents and name contains '.gpx'`,
-    fields: 'files(id, name)'
-  });
-  console.log('All files found:', res.data.files);
-  return res.data.files;
+  if (process.env.NODE_ENV === 'test') {
+    return fs.readdirSync(gpxFilesDir)
+      .filter(file => path.extname(file) === '.gpx')
+      .map(file => ({ name: file }));
+  } else {
+    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+    const res = await drive.files.list({
+      q: `'${folderId}' in parents and name contains '.gpx'`,
+      fields: 'files(id, name)'
+    });
+    console.log('All files found:', res.data.files);
+    return res.data.files;
+  }
 }
 
 async function downloadGpxFile(fileId, fileName) {
-  const res = await drive.files.get({
-    fileId: fileId,
-    alt: 'media'
-  }, { responseType: 'stream' });
+  if (process.env.NODE_ENV === 'test') {
+    const filePath = path.join(gpxFilesDir, fileName);
+    return fs.readFileSync(filePath, 'utf8');
+  } else {
+    const res = await drive.files.get({
+      fileId: fileId,
+      alt: 'media'
+    }, { responseType: 'stream' });
 
-  return new Promise((resolve, reject) => {
-    let data = '';
-    res.data.on('data', chunk => {
-      data += chunk;
+    return new Promise((resolve, reject) => {
+      let data = '';
+      res.data.on('data', chunk => {
+        data += chunk;
+      });
+      res.data.on('end', () => {
+        const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
+        const filePath = path.join(gpxFilesDir, sanitizedFileName);
+        ensureGpxFilesDirectoryExists();
+        fs.writeFileSync(filePath, data);
+        resolve(data);
+      });
+      res.data.on('error', err => {
+        reject(err);
+      });
     });
-    res.data.on('end', () => {
-      const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
-      const filePath = path.join(gpxFilesDir, sanitizedFileName);
-      ensureGpxFilesDirectoryExists();
-      fs.writeFileSync(filePath, data);
-      resolve(data);
-    });
-    res.data.on('error', err => {
-      reject(err);
-    });
-  });
+  }
 }
 
 async function processGpxFiles() {
