@@ -6,6 +6,7 @@ const { sanitizeFileName } = require('./sanitize-gpx');
 
 const outputFilePath = path.join(__dirname, '../data/traces.json');
 const gpxFilesDir = path.join(__dirname, '../gpx-files');
+const exampleGpxFilesDir = path.join(__dirname, '../example-gpx');
 
 const categories = ['parcours', 'chemin_boueux', 'chemin_inondable', 'danger'];
 
@@ -21,9 +22,11 @@ const drive = google.drive({
 
 async function listGpxFiles() {
   if (process.env.NODE_ENV === 'test') {
-    return fs.readdirSync(gpxFilesDir)
+    const exampleFiles = fs.readdirSync(exampleGpxFilesDir)
       .filter(file => path.extname(file) === '.gpx')
       .map(file => ({ name: file }));
+    console.log('All files found:', exampleFiles);
+    return exampleFiles;
   } else {
     const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
     const res = await drive.files.list({
@@ -37,8 +40,11 @@ async function listGpxFiles() {
 
 async function downloadGpxFile(fileId, fileName) {
   if (process.env.NODE_ENV === 'test') {
-    const filePath = path.join(gpxFilesDir, fileName);
-    return fs.readFileSync(filePath, 'utf8');
+    const srcPath = path.join(exampleGpxFilesDir, fileName);
+    const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
+    const destPath = path.join(gpxFilesDir, sanitizedFileName);
+    fs.copyFileSync(srcPath, destPath);
+    return fs.readFileSync(destPath, 'utf8');
   } else {
     const res = await drive.files.get({
       fileId: fileId,
