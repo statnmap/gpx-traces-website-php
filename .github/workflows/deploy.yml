@@ -4,6 +4,8 @@ on:
   push:
     branches:
       - main
+  release:
+    types: [published]
   schedule:
     - cron: '0 9 * * 1'
 
@@ -41,8 +43,17 @@ jobs:
       - name: Check Dependabot alerts
         run: npm audit
 
-      - name: Deploy to GitHub Pages
+      - name: Deploy to GitHub Pages (release)
+        if: github.event_name == 'release'
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
           publish_dir: ./dist
+
+      - name: Deploy to GitHub Pages (dev)
+        if: github.event_name != 'release'
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+          publish_dir: ./dist
+          destination_dir: dev
