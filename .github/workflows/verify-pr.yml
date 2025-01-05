@@ -10,6 +10,7 @@ jobs:
     runs-on: ubuntu-latest
     env:
       GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
+      GOOGLE_DRIVE_FOLDER_ID_TEST: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID_TEST }}
 
     steps:
       - name: Checkout repository
