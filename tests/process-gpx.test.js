@@ -1,6 +1,9 @@
 process.env.NODE_ENV = 'test';
 
-const { getCategory, getCoordinates } = require('../scripts/process-gpx');
+const { getCategory, getCoordinates, processGpxFiles } = require('../scripts/process-gpx');
+const { google } = require('googleapis');
+const fs = require('fs');
+const path = require('path');
 
 describe('getCategory', () => {
   test('returns correct category for parcours', () => {
@@ -35,5 +38,58 @@ describe('getCoordinates', () => {
       { lat: 47.326, lon: -1.737 }
     ];
     expect(getCoordinates(trkpts)).toEqual(expectedCoordinates);
+  });
+});
+
+describe('Google Drive integration', () => {
+  const gpxFilesDir = path.join(__dirname, '../gpx-files');
+  const outputFilePath = path.join(__dirname, '../data/traces.json');
+
+  beforeAll(async () => {
+    // Set up Google Drive credentials
+    const credentials = JSON.parse(process.env.GOOGLE_DRIVE_CREDENTIALS);
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/drive.readonly']
+    });
+    google.options({ auth });
+
+    // Process GPX files
+    await processGpxFiles();
+  });
+
+  afterAll(() => {
+    // Clean up the gpx-files directory and traces.json file
+    fs.readdirSync(gpxFilesDir).forEach((file) => {
+      fs.unlinkSync(path.join(gpxFilesDir, file));
+    });
+    if (fs.existsSync(outputFilePath)) {
+      fs.unlinkSync(outputFilePath);
+    }
+  });
+
+  test('downloads and processes GPX files from Google Drive', async () => {
+    // Check the traces.json file
+    expect(fs.existsSync(outputFilePath)).toBe(true);
+    const tracesJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
+    expect(tracesJson.traces).toHaveLength(2);
+
+    // Check the trace 0
+    expect(tracesJson.traces[0].name).toBe('Chemin boueux - La valinière');
+    expect(tracesJson.traces[0].sanitizedName).toBe('chemin_boueux___la_valiniere');
+    expect(tracesJson.traces[0].category).toBe('chemin_boueux');
+    expect(tracesJson.traces[0].coordinates).toEqual([
+      { lat: 47.325, lon: -1.736 },
+      { lat: 47.326, lon: -1.737 }
+    ]);
+    
+    // Check the trace 1
+    expect(tracesJson.traces[1].name).toBe('Sample Track');
+    expect(tracesJson.traces[1].sanitizedName).toBe('sample_track');
+    expect(tracesJson.traces[1].category).toBe('autres');
+    expect(tracesJson.traces[1].coordinates).toEqual([
+      { lat: 47.325, lon: -1.736 },
+      { lat: 47.326, lon: -1.737 }
+    ]);
   });
 });

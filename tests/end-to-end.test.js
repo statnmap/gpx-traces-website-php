@@ -4,50 +4,29 @@ const { processGpxFiles } = require('../scripts/process-gpx');
 const { sanitizeGpxFileNames } = require('../scripts/sanitize-gpx');
 const fs = require('fs');
 const path = require('path');
+const { google } = require('googleapis');
 
 describe('End-to-end filename processing', () => {
-  const exampleGpxFilesDir = path.join(__dirname, '../example-gpx');
   const gpxFilesDir = path.join(__dirname, '../gpx-files');
   const outputFilePath = path.join(__dirname, '../data/traces.json');
 
-  beforeAll(() => {
-    // Ensure the example-gpx directory exists
-    if (!fs.existsSync(exampleGpxFilesDir)) {
-      fs.mkdirSync(exampleGpxFilesDir);
-    }
+  beforeAll(async () => {
+    // Set up Google Drive credentials
+    const credentials = JSON.parse(process.env.GOOGLE_DRIVE_CREDENTIALS);
+    const auth = new google.auth.GoogleAuth({
+      credentials,
+      scopes: ['https://www.googleapis.com/auth/drive.readonly']
+    });
+    google.options({ auth });
 
-    // Create sample GPX files for testing in alphabetical order
-    const sampleGpxContent0 = `
-    <gpx>
-      <trk>
-        <name>Chemin boueux - La valinière</name>
-        <trkseg>
-          <trkpt lat="47.325" lon="-1.736"></trkpt>
-          <trkpt lat="47.326" lon="-1.737"></trkpt>
-        </trkseg>
-      </trk>
-    </gpx>
-  `;
-  fs.writeFileSync(path.join(exampleGpxFilesDir, 'Chemin boueux - La valinière.gpx'), sampleGpxContent0);
-
-    const sampleGpxContent1 = `
-      <gpx>
-        <trk>
-          <name>Sample Track</name>
-          <trkseg>
-            <trkpt lat="47.325" lon="-1.736"></trkpt>
-            <trkpt lat="47.326" lon="-1.737"></trkpt>
-          </trkseg>
-        </trk>
-      </gpx>
-    `;
-    fs.writeFileSync(path.join(exampleGpxFilesDir, 'Sample Track.gpx'), sampleGpxContent1);
+    // Process GPX files
+    await processGpxFiles();
   });
 
   afterAll(() => {
-    // Clean up the example-gpx directory and traces.json file
-    fs.readdirSync(exampleGpxFilesDir).forEach((file) => {
-      fs.unlinkSync(path.join(exampleGpxFilesDir, file));
+    // Clean up the gpx-files directory and traces.json file
+    fs.readdirSync(gpxFilesDir).forEach((file) => {
+      fs.unlinkSync(path.join(gpxFilesDir, file));
     });
     if (fs.existsSync(outputFilePath)) {
       fs.unlinkSync(outputFilePath);
@@ -55,9 +34,6 @@ describe('End-to-end filename processing', () => {
   });
 
   test('sanitizes, categorizes, processes, and displays the filename correctly', async () => {
-    // Process GPX files
-    await processGpxFiles();
-
     // Check the sanitized file names
     const sanitizedFileName0 = 'chemin_boueux___la_valiniere.gpx';
     const sanitizedFileName1 = 'sample_track.gpx';
