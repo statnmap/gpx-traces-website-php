@@ -198,8 +198,9 @@ This will process the GPX files from the specified Google Drive folder and updat
 To create the correct GPX files for unit tests and store them manually on the proper Google Drive, follow these steps:
 
 1. Create the GPX files with the required content. Ensure the file names include the category ("parcours", "chemin_boueux", "chemin_inondable", "danger", "autres") to map them correctly.
-2. Upload the GPX files to the designated test folder on Google Drive.
-3. Find the ID of the test folder on Google Drive by navigating to the folder and copying the long string of characters after `folders/` in the URL.
-4. Create the `GOOGLE_DRIVE_FOLDER_ID_TEST` secret in your GitHub repository with the test folder ID as the value. Refer to the instructions in the `README.md` file for creating secrets.
+2. Store the gpx files in the "test-gpx-files/" directory to record changes
+3. Upload the GPX files to the designated test folder on Google Drive.
+4. Find the ID of the test folder on Google Drive by navigating to the folder and copying the long string of characters after `folders/` in the URL.
+5. Create the `GOOGLE_DRIVE_FOLDER_ID_TEST` secret in your GitHub repository with the test folder ID as the value. Refer to the instructions in the `README.md` file for creating secrets.
 
 
