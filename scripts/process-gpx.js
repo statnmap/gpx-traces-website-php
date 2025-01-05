@@ -6,7 +6,6 @@ const { sanitizeFileName } = require('./sanitize-gpx');
 
 const outputFilePath = path.join(__dirname, '../data/traces.json');
 const gpxFilesDir = path.join(__dirname, '../gpx-files');
-const exampleGpxFilesDir = path.join(__dirname, '../example-gpx');
 
 const categories = ['parcours', 'chemin_boueux', 'chemin_inondable', 'danger'];
 
@@ -22,55 +21,38 @@ const drive = google.drive({
 
 async function listGpxFiles() {
   console.log('Starting listGpxFile function');
-  if (process.env.NODE_ENV === 'test') {
-    const exampleFiles = fs.readdirSync(exampleGpxFilesDir)
-      .filter(file => path.extname(file) === '.gpx')
-      .map(file => ({ name: file }));
-    console.log('All files found:', exampleFiles);
-    return exampleFiles;
-  } else {
-    const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
-    const res = await drive.files.list({
-      q: `'${folderId}' in parents and name contains '.gpx'`,
-      fields: 'files(id, name)'
-    });
-    console.log('All files found:', res.data.files);
-    return res.data.files;
-  }
+  const folderId = process.env.NODE_ENV === 'test' ? process.env.GOOGLE_DRIVE_FOLDER_ID_TEST : process.env.GOOGLE_DRIVE_FOLDER_ID;
+  const res = await drive.files.list({
+    q: `'${folderId}' in parents and name contains '.gpx'`,
+    fields: 'files(id, name)'
+  });
+  console.log('All files found:', res.data.files);
+  return res.data.files;
 }
 
 async function downloadGpxFile(fileId, fileName) {
   console.log('Starting downloadGpxFile:', fileName);
-  if (process.env.NODE_ENV === 'test') {
-    const srcPath = path.join(exampleGpxFilesDir, fileName);
-    const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
-    const destPath = path.join(gpxFilesDir, sanitizedFileName);
-    ensureGpxFilesDirectoryExists();
-    fs.copyFileSync(srcPath, destPath);
-    return destPath;
-  } else {
-    const res = await drive.files.get({
-      fileId: fileId,
-      alt: 'media'
-    }, { responseType: 'stream' });
+  const res = await drive.files.get({
+    fileId: fileId,
+    alt: 'media'
+  }, { responseType: 'stream' });
 
-    return new Promise((resolve, reject) => {
-      let data = '';
-      res.data.on('data', chunk => {
-        data += chunk;
-      });
-      res.data.on('end', () => {
-        const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
-        const filePath = path.join(gpxFilesDir, sanitizedFileName);
-        ensureGpxFilesDirectoryExists();
-        fs.writeFileSync(filePath, data);
-        resolve(filePath);
-      });
-      res.data.on('error', err => {
-        reject(err);
-      });
+  return new Promise((resolve, reject) => {
+    let data = '';
+    res.data.on('data', chunk => {
+      data += chunk;
     });
-  }
+    res.data.on('end', () => {
+      const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
+      const filePath = path.join(gpxFilesDir, sanitizedFileName);
+      ensureGpxFilesDirectoryExists();
+      fs.writeFileSync(filePath, data);
+      resolve(filePath);
+    });
+    res.data.on('error', err => {
+      reject(err);
+    });
+  });
 }
 
 async function processGpxFiles() {
