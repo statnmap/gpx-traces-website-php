@@ -1,5 +1,7 @@
 # GPX Traces Map
 
+![CI](https://github.com/statnmap/gpx-traces-website/workflows/Verify%20PR/badge.svg)
+
 This repository contains the necessary files and code to use GPX files stored in the repository as input and show the GPX traces on an interactive map.
 
 ## Directory Structure
@@ -58,6 +60,20 @@ To create the `GOOGLE_DRIVE_FOLDER_ID` secret in your GitHub repository, follow 
 7. Click on the "Add secret" button.
 
 This will create the `GOOGLE_DRIVE_FOLDER_ID` secret in your repository, which will be used by the GitHub Actions workflows to specify the folder containing the GPX files.
+
+## Creating the GOOGLE_DRIVE_FOLDER_ID_TEST Secret
+
+To create the `GOOGLE_DRIVE_FOLDER_ID_TEST` secret in your GitHub repository, follow these steps:
+
+1. Go to your repository on GitHub.
+2. Click on the "Settings" tab.
+3. In the left sidebar, click on "Secrets".
+4. Click on the "New repository secret" button.
+5. In the "Name" field, enter `GOOGLE_DRIVE_FOLDER_ID_TEST`.
+6. In the "Value" field, enter the ID of the specific test folder on Google Drive.
+7. Click on the "Add secret" button.
+
+This will create the `GOOGLE_DRIVE_FOLDER_ID_TEST` secret in your repository, which will be used by the GitHub Actions workflows to specify the test folder containing the GPX files.
 
 ## Finding the ID of the GOOGLE_DRIVE_FOLDER_ID
 
@@ -176,3 +192,38 @@ To run the script locally while defining the `GOOGLE_DRIVE_FOLDER_ID` and `GOOGL
    ```
 
 This will process the GPX files from the specified Google Drive folder and update the `data/traces.json` file.
+
+## Creating GPX Files for Unit Tests and Storing Them on Google Drive
+
+To create the correct GPX files for unit tests and store them manually on the proper Google Drive, follow these steps:
+
+1. Create the GPX files with the required content. Ensure the file names include the category ("parcours", "chemin_boueux", "chemin_inondable", "danger", "autres") to map them correctly.
+2. Store the gpx files in the "test-gpx-files/" directory to record changes
+3. Upload the GPX files to the designated test folder on Google Drive.
+4. Find the ID of the test folder on Google Drive by navigating to the folder and copying the long string of characters after `folders/` in the URL.
+5. Create the `GOOGLE_DRIVE_FOLDER_ID_TEST` secret in your GitHub repository with the test folder ID as the value. Refer to the instructions in the `README.md` file for creating secrets.
+
+## Code Quality and Style Enforcement
+
+The project uses ESLint for code quality and style enforcement. ESLint helps to identify and fix problems in the JavaScript code, ensuring that the codebase follows consistent coding standards.
+
+The project also uses Prettier for code formatting. Prettier automatically formats the code according to a set of predefined rules, making the code more readable and maintainable.
+
+To run ESLint and Prettier, use the following commands:
+
+```sh
+npm run lint
+npm run format
+```
+
+## JavaScript Transpilation
+
+The project uses Babel for JavaScript transpilation. Babel allows the use of modern JavaScript features by converting the code into a compatible version that can run in older browsers.
+
+The Babel configuration can be found in the `babel.config.json` file.
+
+## Bundling
+
+The project uses Webpack for bundling the JavaScript code and other assets. Webpack helps to optimize the code and manage dependencies, making the project more efficient and easier to maintain.
+
+The Webpack configuration can be found in the `webpack.config.js` file.

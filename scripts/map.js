@@ -1,5 +1,8 @@
 import L from 'leaflet';
 import xml2js from 'xml2js';
+import { getColor, getWeight } from './map-utils';
+
+const gpxFilesDir = process.env.GPX_FILES_DIR || 'gpx-files-real-data';
 
 let gpsMarker = null;
 
@@ -24,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
+              <a href="${gpxFilesDir}/${trace.sanitizedName}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
@@ -52,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
+              <a href="${gpxFilesDir}/${trace.sanitizedName}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
@@ -80,34 +83,6 @@ document.addEventListener('DOMContentLoaded', () => {
         });
       });
     });
-
-  function getColor(category) {
-    if (category === 'parcours') {
-      return '#35978f';
-    } else if (category === 'chemin_boueux') {
-      return '#542788';
-    } else if (category === 'chemin_inondable') {
-      return '#fdb863';
-    } else if (category === 'danger') {
-      return '#b30000';
-    } else {
-      return 'pink';
-    }
-  }
-
-  function getWeight(category) {
-    if (category === 'parcours') {
-      return 8;
-    } else if (category === 'chemin_boueux') {
-      return 10;
-    } else if (category === 'chemin_inondable') {
-      return 10;
-    } else if (category === 'danger') {
-      return 11;
-    } else {
-      return 8;
-    }
-  }
 
   function addCurrentPositionToMap(position) {
     const { latitude, longitude } = position.coords;

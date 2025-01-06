@@ -5,7 +5,6 @@ const { google } = require('googleapis');
 const { sanitizeFileName } = require('./sanitize-gpx');
 
 const outputFilePath = path.join(__dirname, '../data/traces.json');
-const gpxFilesDir = path.join(__dirname, '../gpx-files');
 
 const categories = ['parcours', 'chemin_boueux', 'chemin_inondable', 'danger'];
 
@@ -20,7 +19,8 @@ const drive = google.drive({
 });
 
 async function listGpxFiles() {
-  const folderId = process.env.GOOGLE_DRIVE_FOLDER_ID;
+  console.log('Starting listGpxFile function');
+  const folderId = process.env.NODE_ENV === 'test' ? process.env.GOOGLE_DRIVE_FOLDER_ID_TEST : process.env.GOOGLE_DRIVE_FOLDER_ID;
   const res = await drive.files.list({
     q: `'${folderId}' in parents and name contains '.gpx'`,
     fields: 'files(id, name)'
@@ -29,7 +29,8 @@ async function listGpxFiles() {
   return res.data.files;
 }
 
-async function downloadGpxFile(fileId, fileName) {
+async function downloadGpxFile(fileId, fileName, gpxFilesDir) {
+  console.log('Starting downloadGpxFile:', fileName);
   const res = await drive.files.get({
     fileId: fileId,
     alt: 'media'
@@ -43,9 +44,9 @@ async function downloadGpxFile(fileId, fileName) {
     res.data.on('end', () => {
       const sanitizedFileName = sanitizeFileName(path.basename(fileName, '.gpx')) + '.gpx';
       const filePath = path.join(gpxFilesDir, sanitizedFileName);
-      ensureGpxFilesDirectoryExists();
+      ensureGpxFilesDirectoryExists(gpxFilesDir);
       fs.writeFileSync(filePath, data);
-      resolve(data);
+      resolve(filePath);
     });
     res.data.on('error', err => {
       reject(err);
@@ -53,12 +54,13 @@ async function downloadGpxFile(fileId, fileName) {
   });
 }
 
-async function processGpxFiles() {
+async function processGpxFiles(gpxFilesDir) {
+  console.log('Starting processGpxFile function');
   const traces = [];
   const files = await listGpxFiles();
 
   // Clean content of gpx-files directory before downloading
-  cleanGpxFilesDirectory();
+  cleanGpxFilesDirectory(gpxFilesDir);
 
   // Delete the existing traces.json file if it exists
   if (fs.existsSync(outputFilePath)) {
@@ -67,43 +69,66 @@ async function processGpxFiles() {
   }
 
   for (const file of files) {
-    const gpxData = await downloadGpxFile(file.id, file.name);
-    const sanitizedFileName = sanitizeFileName(path.basename(file.name, '.gpx')) + '.gpx';
+    try {
+      const filePath = await downloadGpxFile(file.id, file.name, gpxFilesDir);
+      const gpxData = fs.readFileSync(filePath, 'utf8');
+      const sanitizedFileName = sanitizeFileName(path.basename(file.name, '.gpx')) + '.gpx';
 
-    xml2js.parseString(gpxData, (err, result) => {
-      if (err) {
-        console.error('Error parsing GPX file:', err);
-        process.exit(1);
-      }
-
-      const trace = {
-        name: path.basename(file.name, '.gpx'),
-        sanitizedName: sanitizeFileName(path.basename(file.name, '.gpx')),
-        category: getCategory(sanitizeFileName(path.basename(file.name, '.gpx'))),
-        coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
-      };
-
-      traces.push(trace);
-
-      ensureDataDirectoryExists();
-
-      fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
+      xml2js.parseString(gpxData, (err, result) => {
         if (err) {
-          console.error('Error writing output file:', err);
-          process.exit(1);
+          console.error('Error parsing GPX file:', err);
+          throw err;
         }
-        console.log(`Successfully processed and saved trace: ${trace.name}`);
+
+        const trace = {
+          name: path.basename(file.name, '.gpx'),
+          sanitizedName: sanitizeFileName(path.basename(file.name, '.gpx')),
+          category: getCategory(sanitizeFileName(path.basename(file.name, '.gpx'))),
+          coordinates: getCoordinates(result.gpx.trk[0].trkseg[0].trkpt)
+        };
+
+        traces.push(trace);
       });
-    });
+    } catch (error) {
+      console.error('Error processing file:', file.name, error);
+      throw error;
+    }
+  }
+
+  try {
+    await writeTracesJson(traces);
+  } catch (error) {
+    console.error('Error writing traces.json:', error);
+    throw error;
   }
 
   // Check if all trace files exist in the gpx-files directory
+  const gpxFiles = fs.readdirSync(gpxFilesDir);
+  console.log('GPX files in directory:', gpxFiles);
+
   traces.forEach(trace => {
     const filePath = path.join(gpxFilesDir, `${trace.sanitizedName}.gpx`);
     if (!fs.existsSync(filePath)) {
       console.error(`File not found: ${filePath}`);
-      process.exit(1);
     }
+  });
+}
+
+async function writeTracesJson(traces) {
+  ensureDataDirectoryExists();
+    if (process.env.NODE_ENV === 'test') {
+      console.log('traces content before JSON', traces)
+    }
+
+  return new Promise((resolve, reject) => {
+    fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
+      if (err) {
+        reject(err);
+      } else {
+        console.log('Successfully wrote traces.json file');
+        resolve();
+      }
+    });
   });
 }
 
@@ -140,13 +165,13 @@ function ensureDataDirectoryExists() {
   }
 }
 
-function ensureGpxFilesDirectoryExists() {
+function ensureGpxFilesDirectoryExists(gpxFilesDir) {
   if (!fs.existsSync(gpxFilesDir)) {
     fs.mkdirSync(gpxFilesDir);
   }
 }
 
-function cleanGpxFilesDirectory() {
+function cleanGpxFilesDirectory(gpxFilesDir) {
   if (fs.existsSync(gpxFilesDir)) {
     fs.readdirSync(gpxFilesDir).forEach((file) => {
       const filePath = path.join(gpxFilesDir, file);
@@ -155,4 +180,8 @@ function cleanGpxFilesDirectory() {
   }
 }
 
-processGpxFiles();
+module.exports = {
+  processGpxFiles,
+  getCategory,
+  getCoordinates
+};
