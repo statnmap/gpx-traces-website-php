@@ -41,6 +41,11 @@ jobs:
       - name: Check code coverage
         run: npm run test:coverage
 
+      - name: Upload coverage report to CODECOV
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Run pre-build script
         run: node scripts/run-process-gpx.js
 

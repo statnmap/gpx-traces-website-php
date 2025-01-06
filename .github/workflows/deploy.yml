@@ -36,14 +36,25 @@ jobs:
       - name: Install googleapis library
         run: npm install googleapis
 
+      - name: Check Dependabot alerts
+        run: npm audit
+
+      - name: Run unit tests
+        run: npm test
+
+      - name: Check code coverage
+        run: npm run test:coverage
+
+      - name: Upload coverage report to CODECOV
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
+
       - name: Run pre-build script
         run: node scripts/run-process-gpx.js
 
       - name: Build website
         run: npm run build
-
-      - name: Check Dependabot alerts
-        run: npm audit
 
       - name: Deploy to GitHub Pages (release)
         if: github.event_name == 'release'
