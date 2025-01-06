@@ -36,7 +36,7 @@ jobs:
         run: npm install googleapis
 
       - name: Run pre-build script
-        run: node scripts/process-gpx.js
+        run: node scripts/run-process-gpx.js
 
       - name: Build website
         run: npm run build
