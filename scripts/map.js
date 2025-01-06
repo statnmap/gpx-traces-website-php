@@ -2,6 +2,8 @@ import L from 'leaflet';
 import xml2js from 'xml2js';
 import { getColor, getWeight } from './map-utils';
 
+const gpxFilesDir = process.env.GPX_FILES_DIR || 'gpx-files-real-data';
+
 let gpsMarker = null;
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -25,7 +27,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
+              <a href="${gpxFilesDir}/${trace.sanitizedName}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
@@ -53,7 +55,7 @@ document.addEventListener('DOMContentLoaded', () => {
           const popupContent = `
             <div>
               <strong>${trace.name}</strong><br>
-              <a href="gpx-files/${trace.sanitizedName}.gpx" download>Download GPX</a>
+              <a href="${gpxFilesDir}/${trace.sanitizedName}.gpx" download>Download GPX</a>
             </div>
           `;
           const popup = L.popup()
