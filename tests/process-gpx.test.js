@@ -47,11 +47,6 @@ describe('Google Drive integration', () => {
   const gpxFilesDir = path.join(__dirname, '../gpx-files');
   const outputFilePath = path.join(__dirname, '../data/traces.json');
 
-  beforeAll(async () => {
-    // Process GPX files
-    await processGpxFiles();
-  });
-
   afterAll(() => {
     // Clean up the gpx-files directory and traces.json file
     fs.readdirSync(gpxFilesDir).forEach((file) => {
@@ -63,6 +58,9 @@ describe('Google Drive integration', () => {
   });
 
   test('downloads and processes GPX files from Google Drive', async () => {
+    // Process GPX files
+    await processGpxFiles();
+
     // Check the traces.json file
     expect(fs.existsSync(outputFilePath)).toBe(true);
     const tracesJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
