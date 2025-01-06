@@ -12,11 +12,6 @@ describe('End-to-end filename processing', () => {
   const gpxFilesDir = path.join(__dirname, '../gpx-files');
   const outputFilePath = path.join(__dirname, '../data/traces.json');
 
-  beforeAll(async () => {
-    // Process GPX files
-    await processGpxFiles();
-  });
-
   afterAll(() => {
     // Clean up the gpx-files directory and traces.json file
     fs.readdirSync(gpxFilesDir).forEach((file) => {
@@ -28,6 +23,10 @@ describe('End-to-end filename processing', () => {
   });
 
   test('sanitizes, categorizes, processes, and displays the filename correctly', async () => {
+
+    // Process GPX files
+    await processGpxFiles();
+
     // Check the sanitized file names
     const sanitizedFileName0 = 'chemin_boueux___la_valiniere.gpx';
     const sanitizedFileName1 = 'sample_track.gpx';

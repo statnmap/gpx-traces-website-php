@@ -104,6 +104,9 @@ async function processGpxFiles() {
   }
 
   // Check if all trace files exist in the gpx-files directory
+  const gpxFiles = fs.readdirSync(gpxFilesDir);
+  console.log('GPX files in directory:', gpxFiles);
+
   traces.forEach(trace => {
     const filePath = path.join(gpxFilesDir, `${trace.sanitizedName}.gpx`);
     if (!fs.existsSync(filePath)) {
