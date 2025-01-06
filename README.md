@@ -203,4 +203,27 @@ To create the correct GPX files for unit tests and store them manually on the pr
 4. Find the ID of the test folder on Google Drive by navigating to the folder and copying the long string of characters after `folders/` in the URL.
 5. Create the `GOOGLE_DRIVE_FOLDER_ID_TEST` secret in your GitHub repository with the test folder ID as the value. Refer to the instructions in the `README.md` file for creating secrets.
 
+## Code Quality and Style Enforcement
 
+The project uses ESLint for code quality and style enforcement. ESLint helps to identify and fix problems in the JavaScript code, ensuring that the codebase follows consistent coding standards.
+
+The project also uses Prettier for code formatting. Prettier automatically formats the code according to a set of predefined rules, making the code more readable and maintainable.
+
+To run ESLint and Prettier, use the following commands:
+
+```sh
+npm run lint
+npm run format
+```
+
+## JavaScript Transpilation
+
+The project uses Babel for JavaScript transpilation. Babel allows the use of modern JavaScript features by converting the code into a compatible version that can run in older browsers.
+
+The Babel configuration can be found in the `babel.config.json` file.
+
+## Bundling
+
+The project uses Webpack for bundling the JavaScript code and other assets. Webpack helps to optimize the code and manage dependencies, making the project more efficient and easier to maintain.
+
+The Webpack configuration can be found in the `webpack.config.js` file.
