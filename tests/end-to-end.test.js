@@ -11,14 +11,6 @@ describe('End-to-end filename processing', () => {
   const outputFilePath = path.join(__dirname, '../data/traces.json');
 
   beforeAll(async () => {
-    // Set up Google Drive credentials
-    const credentials = JSON.parse(process.env.GOOGLE_DRIVE_CREDENTIALS);
-    const auth = new google.auth.GoogleAuth({
-      credentials,
-      scopes: ['https://www.googleapis.com/auth/drive.readonly']
-    });
-    google.options({ auth });
-
     // Process GPX files
     await processGpxFiles();
   });
