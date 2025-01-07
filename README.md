@@ -1,14 +1,24 @@
 # GPX Traces Map
 
 ![CI](https://github.com/statnmap/gpx-traces-website/workflows/Verify%20PR/badge.svg)
+[![codecov](https://codecov.io/gh/statnmap/gpx-traces-website/branch/main/graph/badge.svg)](https://codecov.io/gh/statnmap/gpx-traces-website)
+![License](https://img.shields.io/github/license/statnmap/gpx-traces-website)
 
-This repository contains the necessary files and code to use GPX files stored in the repository as input and show the GPX traces on an interactive map.
+
+
+This repository contains the necessary code to process GPX files stored in a Google Drive folder as input and show the GPX traces on an interactive map.
 
 ## Directory Structure
 
-- `data/`: Directory to store processed data.
 - `scripts/`: Directory to store scripts.
+- `tests/`: Directory to store unit tests.
+- `test-gpx-files/`: Directory to store GPX files to be used for unit tests.
 - `.github/workflows/`: Directory to store GitHub Actions workflows.
+
+## Documentation
+
+The documentation for the codebase can be found under the `docs/` directory in the generated website: https://statnmap.github.io/gpx-traces-website/docs/
+The documentation is generated using JSDoc.
 
 ## Creating the GOOGLE_DRIVE_CREDENTIALS Secret
 
@@ -258,7 +268,7 @@ The generated documentation will be available in the `out/` directory.
 
 ## Deploying Documentation
 
-The GitHub Actions workflow is configured to generate and deploy the documentation to a sub-directory of the gh-pages branch during CI/CD. The documentation will be available at `https://<username>.github.io/gpx-traces-website/docs/`.
+The GitHub Actions workflow is configured to generate and deploy the documentation to a sub-directory of the gh-pages branch during CI/CD. The documentation will be available at `https://statnmap.github.io/gpx-traces-website/docs/`.
 
 ## Simplifying GPX File Geometry
 

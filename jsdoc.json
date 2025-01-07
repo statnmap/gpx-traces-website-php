@@ -10,10 +10,14 @@
   "plugins": [],
   "templates": {
     "cleverLinks": false,
-    "monospaceLinks": false
+    "monospaceLinks": false,
+    "default": {
+      "outputSourceFiles": false
+    }
   },
   "opts": {
     "destination": "./dist/docs/",
-    "recurse": true
+    "recurse": true,
+    "readme": "./README.md"
   }
 }
