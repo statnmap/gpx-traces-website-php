@@ -51,3 +51,6 @@ jobs:
 
       - name: Build website
         run: npm run build
+
+      - name: Generate documentation
+        run: npm run generate-docs
