@@ -3,6 +3,14 @@ import xml2js from 'xml2js';
 import { getColor, getWeight } from './map-utils';
 
 /**
+ * The path to the output dir where the processed gpx files were saved.
+ * @type {string}
+ */
+const gpxFilesDir = process.env.GPX_FILES_DIR || 'gpx-files-real-data';
+
+let gpsMarker = null;
+
+/**
  * Initializes the map and sets up event listeners.
  */
 function initializeMap() {
