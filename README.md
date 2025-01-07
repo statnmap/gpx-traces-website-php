@@ -150,9 +150,10 @@ To run the script locally while defining the `GOOGLE_DRIVE_FOLDER_ID` and `GOOGL
    ```sh
    npm install
    ``` 
-3. Set the `GOOGLE_DRIVE_FOLDER_ID` environment variable by running:
+3. Set the `GOOGLE_DRIVE_FOLDER_ID` environment variables by running:
    ```sh
    export GOOGLE_DRIVE_FOLDER_ID="your-folder-id"
+   export GOOGLE_DRIVE_FOLDER_ID_TEST="your-test-folder-id"
    ```
    Replace `"your-folder-id"` with the actual folder ID from Google Drive.
 
