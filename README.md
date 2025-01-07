@@ -1,6 +1,6 @@
 # GPX Traces Map
 
-![CI](https://github.com/statnmap/gpx-traces-website/workflows/Verify%20PR/badge.svg)
+![CI](https://github.com/statnmap/gpx-traces-website/workflows/Deploy/badge.svg)
 [![codecov](https://codecov.io/gh/statnmap/gpx-traces-website/graph/badge.svg?token=W4PKFFU3EN)](https://codecov.io/gh/statnmap/gpx-traces-website)
 ![License](https://img.shields.io/github/license/statnmap/gpx-traces-website)
 
