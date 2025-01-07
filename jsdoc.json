@@ -13,7 +13,7 @@
     "monospaceLinks": false
   },
   "opts": {
-    "destination": "./out/",
+    "destination": "./dist/docs/",
     "recurse": true
   }
 }
