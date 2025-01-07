@@ -4,6 +4,7 @@ const xml2js = require('xml2js');
 const { google } = require('googleapis');
 const { sanitizeFileName } = require('./sanitize-gpx');
 const turf = require('@turf/turf');
+const proj4 = require('proj4');
 
 /**
  * The list of categories for the GPX traces.
@@ -209,9 +210,23 @@ function getCoordinates(trkpts) {
  * @returns {Object[]} The simplified array of coordinate objects.
  */
 function simplifyCoordinates(coordinates) {
-  const line = turf.lineString(coordinates.map(coord => [coord.lon, coord.lat]));
+  // Define the Lambert-93 projection
+  const proj = '+proj=lcc +lat_1=44 +lat_2=49 +lat_0=46.5 +lon_0=3 +x_0=700000 +y_0=6600000 +datum=RGF93 +units=m +no_defs';
+
+  // Convert geographic coordinates to projected coordinates
+  const projectedCoordinates = coordinates.map(coord => proj4(proj, [coord.lon, coord.lat]));
+
+  // Create a line string with projected coordinates
+  const line = turf.lineString(projectedCoordinates);
+
+  // Simplify the line with a tolerance of 10 meters
   const simplified = turf.simplify(line, { tolerance: 10, highQuality: true });
-  return simplified.geometry.coordinates.map(coord => ({ lat: coord[1], lon: coord[0] }));
+
+  // Convert simplified coordinates back to geographic coordinates
+  const simplifiedGeographic = simplified.geometry.coordinates.map(coord => proj4(proj, 'WGS84', coord));
+
+  // Return the simplified coordinates in geographic format
+  return simplifiedGeographic.map(coord => ({ lat: coord[1], lon: coord[0] }));
 }
 
 /**
