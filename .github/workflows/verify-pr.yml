@@ -12,6 +12,7 @@ jobs:
       GOOGLE_DRIVE_FOLDER_ID: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID }}
       GOOGLE_DRIVE_FOLDER_ID_TEST: ${{ secrets.GOOGLE_DRIVE_FOLDER_ID_TEST }}
       GPX_FILES_DIR: gpx-files-real-data
+      TRACES_FILE_PATH: traces-real/traces.json
 
     steps:
       - name: Checkout repository

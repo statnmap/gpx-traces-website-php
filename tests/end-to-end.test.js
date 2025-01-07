@@ -9,22 +9,22 @@ const { google } = require('googleapis');
 
 describe('End-to-end filename processing', () => {
   const gpxFilesDir = path.join(__dirname, '../gpx-files-end-to-end');
-  const outputFilePath = path.join(__dirname, '../data/traces.json');
+  const tracesFilePath = path.join(__dirname, '../traces-end-to-end/traces.json');
 
   afterAll(() => {
     // Clean up the gpx-files directory and traces.json file
     fs.readdirSync(gpxFilesDir).forEach((file) => {
       fs.unlinkSync(path.join(gpxFilesDir, file));
     });
-    if (fs.existsSync(outputFilePath)) {
-      fs.unlinkSync(outputFilePath);
+    if (fs.existsSync(tracesFilePath)) {
+      fs.unlinkSync(tracesFilePath);
     }
   });
 
   test('sanitizes, categorizes, processes, and displays the filename correctly', async () => {
 
     // Process GPX files
-    await processGpxFiles(gpxFilesDir);
+    await processGpxFiles(gpxFilesDir, tracesFilePath);
 
     // Check the sanitized file names
     const sanitizedFileName0 = 'chemin_boueux___la_valiniere.gpx';
@@ -33,8 +33,8 @@ describe('End-to-end filename processing', () => {
     expect(fs.existsSync(path.join(gpxFilesDir, sanitizedFileName1))).toBe(true);
 
     // Check the traces.json file
-    expect(fs.existsSync(outputFilePath)).toBe(true);
-    const tracesJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
+    expect(fs.existsSync(tracesFilePath)).toBe(true);
+    const tracesJson = JSON.parse(fs.readFileSync(tracesFilePath, 'utf8'));
     expect(tracesJson.traces).toHaveLength(2);
 
     // Check the trace 0
