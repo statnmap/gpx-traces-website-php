@@ -2,7 +2,7 @@ jest.setTimeout(10000);
 
 process.env.NODE_ENV = 'test';
 
-const { getCategory, getCoordinates, processGpxFiles } = require('../scripts/process-gpx');
+const { getCategory, getCoordinates, processGpxFiles, simplifyCoordinates } = require('../scripts/process-gpx');
 const { google } = require('googleapis');
 const fs = require('fs');
 const path = require('path');
@@ -40,6 +40,21 @@ describe('getCoordinates', () => {
       { lat: 47.326, lon: -1.737 }
     ];
     expect(getCoordinates(trkpts)).toEqual(expectedCoordinates);
+  });
+});
+
+describe('simplifyCoordinates', () => {
+  test('simplifies coordinates correctly', () => {
+    const coordinates = [
+      { lat: 47.325, lon: -1.736 },
+      { lat: 47.3251, lon: -1.7361 },
+      { lat: 47.326, lon: -1.737 }
+    ];
+    const expectedSimplifiedCoordinates = [
+      { lat: 47.325, lon: -1.736 },
+      { lat: 47.326, lon: -1.737 }
+    ];
+    expect(simplifyCoordinates(coordinates)).toEqual(expectedSimplifiedCoordinates);
   });
 });
 

@@ -259,3 +259,12 @@ The generated documentation will be available in the `out/` directory.
 
 The GitHub Actions workflow is configured to generate and deploy the documentation to a sub-directory of the gh-pages branch during CI/CD. The documentation will be available at `https://<username>.github.io/gpx-traces-website/docs/`.
 
+## Simplifying GPX File Geometry
+
+The code now includes a feature to simplify GPX file geometry while keeping one point every 10 meters. This helps reduce the size of GPX files and improve performance.
+
+To achieve this, the `simplifyCoordinates` function was added to the `scripts/process-gpx.js` file. This function filters coordinates based on a 10-meter distance threshold.
+
+The `getCoordinates` function in the `scripts/process-gpx.js` file was updated to use the `simplifyCoordinates` function.
+
+Unit tests were added in the `tests/process-gpx.test.js` file to verify the simplification logic.

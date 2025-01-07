@@ -3,6 +3,7 @@ const path = require('path');
 const xml2js = require('xml2js');
 const { google } = require('googleapis');
 const { sanitizeFileName } = require('./sanitize-gpx');
+const turf = require('@turf/turf');
 
 /**
  * The list of categories for the GPX traces.
@@ -195,10 +196,22 @@ function getCategory(sanitizedName) {
  * @returns {Object[]} The array of coordinate objects.
  */
 function getCoordinates(trkpts) {
-  return trkpts.map((trkpt) => ({
+  const coordinates = trkpts.map((trkpt) => ({
     lat: parseFloat(trkpt.$.lat),
     lon: parseFloat(trkpt.$.lon)
   }));
+  return simplifyCoordinates(coordinates);
+}
+
+/**
+ * Simplifies the coordinates by keeping one point every 10 meters using Turf.js.
+ * @param {Object[]} coordinates - The array of coordinate objects.
+ * @returns {Object[]} The simplified array of coordinate objects.
+ */
+function simplifyCoordinates(coordinates) {
+  const line = turf.lineString(coordinates.map(coord => [coord.lon, coord.lat]));
+  const simplified = turf.simplify(line, { tolerance: 10, highQuality: true });
+  return simplified.geometry.coordinates.map(coord => ({ lat: coord[1], lon: coord[0] }));
 }
 
 /**
@@ -238,5 +251,6 @@ function cleanGpxFilesDirectory(gpxFilesDir) {
 module.exports = {
   processGpxFiles,
   getCategory,
-  getCoordinates
+  getCoordinates,
+  simplifyCoordinates
 };
