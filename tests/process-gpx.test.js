@@ -45,25 +45,25 @@ describe('getCoordinates', () => {
 
 describe('Google Drive integration', () => {
   const gpxFilesDir = path.join(__dirname, '../gpx-files-process');
-  const outputFilePath = path.join(__dirname, '../data/traces.json');
+  const tracesFilePath = path.join(__dirname, '../traces-process/traces.json');
 
   afterAll(() => {
     // Clean up the gpx-files directory and traces.json file
     fs.readdirSync(gpxFilesDir).forEach((file) => {
       fs.unlinkSync(path.join(gpxFilesDir, file));
     });
-    if (fs.existsSync(outputFilePath)) {
-      fs.unlinkSync(outputFilePath);
+    if (fs.existsSync(tracesFilePath)) {
+      fs.unlinkSync(tracesFilePath);
     }
   });
 
   test('downloads and processes GPX files from Google Drive', async () => {
     // Process GPX files
-    await processGpxFiles(gpxFilesDir);
+    await processGpxFiles(gpxFilesDir, tracesFilePath);
 
     // Check the traces.json file
-    expect(fs.existsSync(outputFilePath)).toBe(true);
-    const tracesJson = JSON.parse(fs.readFileSync(outputFilePath, 'utf8'));
+    expect(fs.existsSync(tracesFilePath)).toBe(true);
+    const tracesJson = JSON.parse(fs.readFileSync(tracesFilePath, 'utf8'));
     expect(tracesJson.traces).toHaveLength(2);
 
     // Check the trace 0

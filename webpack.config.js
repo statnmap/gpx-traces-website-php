@@ -5,6 +5,7 @@ const dotenv = require('dotenv');
 dotenv.config();
 
 const gpxFilesDir = process.env.GPX_FILES_DIR || 'gpx-files-real-data';
+const tracesFilePath = process.env.TRACES_FILE_PATH || 'traces-real/traces.json';
 
 module.exports = {
   entry: './scripts/map.js',
@@ -36,7 +37,7 @@ module.exports = {
       patterns: [
         { from: 'index.html', to: 'index.html' },
         { from: 'styles.css', to: 'styles.css' },
-        { from: 'data/traces.json', to: 'data/traces.json' },
+        { from: tracesFilePath, to: tracesFilePath },
         { from: gpxFilesDir, to: gpxFilesDir }
       ]
     })

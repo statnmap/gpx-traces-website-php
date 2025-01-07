@@ -5,12 +5,6 @@ const { google } = require('googleapis');
 const { sanitizeFileName } = require('./sanitize-gpx');
 
 /**
- * The path to the output file where the processed traces will be saved.
- * @type {string}
- */
-const outputFilePath = path.join(__dirname, '../data/traces.json');
-
-/**
  * The list of categories for the GPX traces.
  * @type {string[]}
  */
@@ -84,9 +78,10 @@ async function downloadGpxFile(fileId, fileName, gpxFilesDir) {
 /**
  * Processes the GPX files in the specified directory and generates a JSON file with the trace data.
  * @param {string} gpxFilesDir - The directory containing the GPX files to process.
+ * @param {string} tracesFilePath - The path to the output file where the processed traces will be saved.
  * @returns {Promise<void>} A promise that resolves when the processing is complete.
  */
-async function processGpxFiles(gpxFilesDir) {
+async function processGpxFiles(gpxFilesDir, tracesFilePath) {
   console.log('Starting processGpxFile function');
   const traces = [];
   const files = await listGpxFiles();
@@ -95,8 +90,8 @@ async function processGpxFiles(gpxFilesDir) {
   cleanGpxFilesDirectory(gpxFilesDir);
 
   // Delete the existing traces.json file if it exists
-  if (fs.existsSync(outputFilePath)) {
-    fs.unlinkSync(outputFilePath);
+  if (fs.existsSync(tracesFilePath)) {
+    fs.unlinkSync(tracesFilePath);
     console.log('Deleted existing traces.json file');
   }
 
@@ -128,7 +123,7 @@ async function processGpxFiles(gpxFilesDir) {
   }
 
   try {
-    await writeTracesJson(traces);
+    await writeTracesJson(traces, tracesFilePath);
   } catch (error) {
     console.error('Error writing traces.json:', error);
     throw error;
@@ -149,16 +144,17 @@ async function processGpxFiles(gpxFilesDir) {
 /**
  * Writes the processed trace data to a JSON file.
  * @param {Object[]} traces - The array of trace objects to write.
+ * @param {string} tracesFilePath - The path to the output file where the processed traces will be saved.
  * @returns {Promise<void>} A promise that resolves when the writing is complete.
  */
-async function writeTracesJson(traces) {
-  ensureDataDirectoryExists();
+async function writeTracesJson(traces, tracesFilePath) {
+  ensureDataDirectoryExists(tracesFilePath);
     if (process.env.NODE_ENV === 'test') {
       console.log('traces content before JSON', traces)
     }
 
   return new Promise((resolve, reject) => {
-    fs.writeFile(outputFilePath, JSON.stringify({ traces }, null, 2), (err) => {
+    fs.writeFile(tracesFilePath, JSON.stringify({ traces }, null, 2), (err) => {
       if (err) {
         reject(err);
       } else {
@@ -207,9 +203,10 @@ function getCoordinates(trkpts) {
 
 /**
  * Ensures that the data directory exists, creating it if necessary.
+ * @param {string} tracesFilePath - The path to the output file where the processed traces will be saved.
  */
-function ensureDataDirectoryExists() {
-  const dataDir = path.join(__dirname, '../data');
+function ensureDataDirectoryExists(tracesFilePath) {
+  const dataDir = path.dirname(tracesFilePath);
   if (!fs.existsSync(dataDir)) {
     fs.mkdirSync(dataDir);
   }

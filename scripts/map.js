@@ -7,6 +7,7 @@ import { getColor, getWeight } from './map-utils';
  * @type {string}
  */
 const gpxFilesDir = process.env.GPX_FILES_DIR || 'gpx-files-real-data';
+const tracesFilePath = process.env.TRACES_FILE_PATH || 'traces-real/traces.json';
 
 let gpsMarker = null;
 
@@ -20,7 +21,7 @@ function initializeMap() {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
   }).addTo(map);
 
-  fetch('data/traces.json')
+  fetch(tracesFilePath)
     .then(response => response.json())
     .then(data => {
       const traces = data.traces;
