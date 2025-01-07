@@ -2,11 +2,18 @@ import L from 'leaflet';
 import xml2js from 'xml2js';
 import { getColor, getWeight } from './map-utils';
 
+/**
+ * The path to the output dir where the processed gpx files were saved.
+ * @type {string}
+ */
 const gpxFilesDir = process.env.GPX_FILES_DIR || 'gpx-files-real-data';
 
 let gpsMarker = null;
 
-document.addEventListener('DOMContentLoaded', () => {
+/**
+ * Initializes the map and sets up event listeners.
+ */
+function initializeMap() {
   const map = L.map('map').setView([47.325, -1.736], 11);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -84,22 +91,39 @@ document.addEventListener('DOMContentLoaded', () => {
       });
     });
 
-  function addCurrentPositionToMap(position) {
-    const { latitude, longitude } = position.coords;
-    gpsMarker = L.marker([latitude, longitude]).addTo(map);
-    gpsMarker.bindPopup('Vous êtes ici').openPopup();
-  }
+  return map;
+}
 
-  function removeCurrentPositionFromMap() {
-    if (gpsMarker) {
-      map.removeLayer(gpsMarker);
-      gpsMarker = null;
-    }
-  }
+/**
+ * Adds the current GPS position to the map.
+ * @param {Object} position - The position object containing latitude and longitude.
+ */
+function addCurrentPositionToMap(position) {
+  const { latitude, longitude } = position.coords;
+  gpsMarker = L.marker([latitude, longitude]).addTo(map);
+  gpsMarker.bindPopup('Vous êtes ici').openPopup();
+}
 
-  function handleError(error) {
-    console.error('Error getting current position:', error);
+/**
+ * Removes the current GPS position marker from the map.
+ */
+function removeCurrentPositionFromMap() {
+  if (gpsMarker) {
+    map.removeLayer(gpsMarker);
+    gpsMarker = null;
   }
+}
+
+/**
+ * Handles errors when getting the current position.
+ * @param {Object} error - The error object.
+ */
+function handleError(error) {
+  console.error('Error getting current position:', error);
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const map = initializeMap();
 
   document.getElementById('add-gps-position').addEventListener('click', (event) => {
     if (gpsMarker) {

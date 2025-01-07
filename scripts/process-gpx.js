@@ -4,20 +4,40 @@ const xml2js = require('xml2js');
 const { google } = require('googleapis');
 const { sanitizeFileName } = require('./sanitize-gpx');
 
+/**
+ * The path to the output file where the processed traces will be saved.
+ * @type {string}
+ */
 const outputFilePath = path.join(__dirname, '../data/traces.json');
 
+/**
+ * The list of categories for the GPX traces.
+ * @type {string[]}
+ */
 const categories = ['parcours', 'chemin_boueux', 'chemin_inondable', 'danger'];
 
+/**
+ * The Google Auth object for authentication with Google Drive.
+ * @type {google.auth.GoogleAuth}
+ */
 const auth = new google.auth.GoogleAuth({
   keyFile: path.join(__dirname, '../credentials.json'),
   scopes: ['https://www.googleapis.com/auth/drive.readonly']
 });
 
+/**
+ * The Google Drive object for interacting with the Google Drive API.
+ * @type {google.drive}
+ */
 const drive = google.drive({
   version: 'v3',
   auth: auth
 });
 
+/**
+ * Lists the GPX files in the specified Google Drive folder.
+ * @returns {Promise<Object[]>} A promise that resolves to an array of file objects.
+ */
 async function listGpxFiles() {
   console.log('Starting listGpxFile function');
   const folderId = process.env.NODE_ENV === 'test' ? process.env.GOOGLE_DRIVE_FOLDER_ID_TEST : process.env.GOOGLE_DRIVE_FOLDER_ID;
@@ -29,6 +49,13 @@ async function listGpxFiles() {
   return res.data.files;
 }
 
+/**
+ * Downloads a GPX file from Google Drive and saves it to the specified directory.
+ * @param {string} fileId - The ID of the file to download.
+ * @param {string} fileName - The name of the file to download.
+ * @param {string} gpxFilesDir - The directory to save the downloaded file.
+ * @returns {Promise<string>} A promise that resolves to the path of the downloaded file.
+ */
 async function downloadGpxFile(fileId, fileName, gpxFilesDir) {
   console.log('Starting downloadGpxFile:', fileName);
   const res = await drive.files.get({
@@ -54,6 +81,11 @@ async function downloadGpxFile(fileId, fileName, gpxFilesDir) {
   });
 }
 
+/**
+ * Processes the GPX files in the specified directory and generates a JSON file with the trace data.
+ * @param {string} gpxFilesDir - The directory containing the GPX files to process.
+ * @returns {Promise<void>} A promise that resolves when the processing is complete.
+ */
 async function processGpxFiles(gpxFilesDir) {
   console.log('Starting processGpxFile function');
   const traces = [];
@@ -114,6 +146,11 @@ async function processGpxFiles(gpxFilesDir) {
   });
 }
 
+/**
+ * Writes the processed trace data to a JSON file.
+ * @param {Object[]} traces - The array of trace objects to write.
+ * @returns {Promise<void>} A promise that resolves when the writing is complete.
+ */
 async function writeTracesJson(traces) {
   ensureDataDirectoryExists();
     if (process.env.NODE_ENV === 'test') {
@@ -132,6 +169,11 @@ async function writeTracesJson(traces) {
   });
 }
 
+/**
+ * Determines the category of a trace based on its sanitized name.
+ * @param {string} sanitizedName - The sanitized name of the trace.
+ * @returns {string} The category of the trace.
+ */
 function getCategory(sanitizedName) {
   if (sanitizedName.startsWith("parcours")) {
     return 'parcours';
@@ -151,6 +193,11 @@ function getCategory(sanitizedName) {
   return 'autres';
 }
 
+/**
+ * Extracts the coordinates from the track points in a GPX file.
+ * @param {Object[]} trkpts - The array of track point objects.
+ * @returns {Object[]} The array of coordinate objects.
+ */
 function getCoordinates(trkpts) {
   return trkpts.map((trkpt) => ({
     lat: parseFloat(trkpt.$.lat),
@@ -158,6 +205,9 @@ function getCoordinates(trkpts) {
   }));
 }
 
+/**
+ * Ensures that the data directory exists, creating it if necessary.
+ */
 function ensureDataDirectoryExists() {
   const dataDir = path.join(__dirname, '../data');
   if (!fs.existsSync(dataDir)) {
@@ -165,12 +215,20 @@ function ensureDataDirectoryExists() {
   }
 }
 
+/**
+ * Ensures that the GPX files directory exists, creating it if necessary.
+ * @param {string} gpxFilesDir - The directory to check and create if necessary.
+ */
 function ensureGpxFilesDirectoryExists(gpxFilesDir) {
   if (!fs.existsSync(gpxFilesDir)) {
     fs.mkdirSync(gpxFilesDir);
   }
 }
 
+/**
+ * Cleans the GPX files directory by deleting all files in it.
+ * @param {string} gpxFilesDir - The directory to clean.
+ */
 function cleanGpxFilesDirectory(gpxFilesDir) {
   if (fs.existsSync(gpxFilesDir)) {
     fs.readdirSync(gpxFilesDir).forEach((file) => {

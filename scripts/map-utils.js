@@ -1,3 +1,8 @@
+/**
+ * Returns the color associated with a given category.
+ * @param {string} category - The category of the trace.
+ * @returns {string} The color associated with the category.
+ */
 function getColor(category) {
   if (category === 'parcours') {
     return '#35978f';
@@ -12,6 +17,11 @@ function getColor(category) {
   }
 }
 
+/**
+ * Returns the weight associated with a given category.
+ * @param {string} category - The category of the trace.
+ * @returns {number} The weight associated with the category.
+ */
 function getWeight(category) {
   if (category === 'parcours') {
     return 8;
