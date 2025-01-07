@@ -1,6 +1,6 @@
-const { sanitizeGpxFileNames, sanitizeFileName } = require('../scripts/sanitize-gpx');
+const { sanitizeFileName } = require('../scripts/sanitize-gpx');
 
-describe('sanitizeGpxFileNames', () => {
+describe('sanitizeFileName', () => {
   test('sanitizes filenames by replacing non-alphanumeric characters with underscores and converting them to lowercase', () => {
     const filenames = [
       'Test File 1.gpx',

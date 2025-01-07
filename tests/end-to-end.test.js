@@ -3,7 +3,6 @@ jest.setTimeout(10000);
 process.env.NODE_ENV = 'test';
 
 const { processGpxFiles } = require('../scripts/process-gpx');
-const { sanitizeGpxFileNames } = require('../scripts/sanitize-gpx');
 const fs = require('fs');
 const path = require('path');
 const { google } = require('googleapis');
