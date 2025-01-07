@@ -12,10 +12,33 @@ const tracesFilePath = process.env.TRACES_FILE_PATH || 'traces-real/traces.json'
 let gpsMarker = null;
 
 /**
- * Initializes the map and sets up event listeners.
+ * Initializes the map and loads GPX traces from a given directory and file path.
+ *
+ * @param {string} gpxFilesDir - The directory where GPX files are stored.
+ * @param {string} tracesFilePath - The path to the JSON file containing trace data.
+ * @returns {L.Map} The initialized Leaflet map instance.
+ *
+ * @example
+ * initializeMap('/path/to/gpx/files', '/path/to/traces.json');
+ *
+ * The JSON file should have the following structure:
+ * {
+ *   "traces": [
+ *     {
+ *       "name": "Trace Name",
+ *       "sanitizedName": "trace-name",
+ *       "category": "category-name",
+ *       "coordinates": [
+ *         { "lat": 47.325, "lon": -1.736 },
+ *         ...
+ *       ]
+ *     },
+ *     ...
+ *   ]
+ * }
  */
-function initializeMap() {
-  const map = L.map('map').setView([47.325, -1.736], 11);
+function initializeMap(gpxFilesDir, tracesFilePath) {
+  const map = L.map('mapcontent').setView([47.325, -1.736], 11);
 
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
@@ -124,7 +147,7 @@ function handleError(error) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-  const map = initializeMap();
+  const map = initializeMap(gpxFilesDir, tracesFilePath);
 
   document.getElementById('add-gps-position').addEventListener('click', (event) => {
     if (gpsMarker) {

@@ -1,2 +1,6 @@
 credentials.json
 node_modules
+dev/
+gpx-files-*/
+traces-*/
+dist/

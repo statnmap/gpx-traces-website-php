@@ -146,13 +146,17 @@ The trace name (`trace.name`) used in the application is derived from the GPX fi
 To run the script locally while defining the `GOOGLE_DRIVE_FOLDER_ID` and `GOOGLE_DRIVE_CREDENTIALS` values during the Terminal session, follow these steps:
 
 1. Open a Terminal session.
-2. Set the `GOOGLE_DRIVE_FOLDER_ID` environment variable by running:
+2. Install the required dependencies by running:
+   ```sh
+   npm install
+   ``` 
+3. Set the `GOOGLE_DRIVE_FOLDER_ID` environment variable by running:
    ```sh
    export GOOGLE_DRIVE_FOLDER_ID="your-folder-id"
    ```
    Replace `"your-folder-id"` with the actual folder ID from Google Drive.
 
-3. Set the `GOOGLE_DRIVE_CREDENTIALS` environment variable by running:
+4. Set the `GOOGLE_DRIVE_CREDENTIALS` environment variable by running:
    ```sh
    export GOOGLE_DRIVE_CREDENTIALS='{
      "type": "service_account",
@@ -169,7 +173,7 @@ To run the script locally while defining the `GOOGLE_DRIVE_FOLDER_ID` and `GOOGL
    ```
    Replace the placeholders with the actual values from your `credentials.json` file.
 
-4. Create the `credentials.json` file by running:
+5. Create the `credentials.json` file by running:
    ```sh
    echo '{
      "type": "service_account",
@@ -186,12 +190,23 @@ To run the script locally while defining the `GOOGLE_DRIVE_FOLDER_ID` and `GOOGL
    ```
    Replace the placeholders with the actual values from your `credentials.json` file.
 
-5. Run the script by executing:
+6. Run the pre-processing script by executing:
    ```sh
-   node scripts/process-gpx.js
+   node scripts/run-process-gpx.js
    ```
 
-This will process the GPX files from the specified Google Drive folder and update the `data/traces.json` file.
+This will process the GPX files from the specified Google Drive folder and update the `traces-real/traces.json` file.
+
+7. Run build locally
+```sh
+npm run build
+```
+
+8. Run the local server
+```sh
+webpack serve
+```
+Stop the server by pressing `Ctrl + C` in the terminal.
 
 ## Creating GPX Files for Unit Tests and Storing Them on Google Drive
 

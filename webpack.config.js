@@ -1,6 +1,7 @@
 const path = require('path');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const dotenv = require('dotenv');
+const webpack = require('webpack');
 
 dotenv.config();
 
@@ -40,6 +41,9 @@ module.exports = {
         { from: tracesFilePath, to: tracesFilePath },
         { from: gpxFilesDir, to: gpxFilesDir }
       ]
+    }),
+    new webpack.DefinePlugin({
+      'process.env': JSON.stringify(process.env)
     })
   ],
   resolve: {
@@ -48,5 +52,15 @@ module.exports = {
       buffer: false,
       timers: false
     }
+  },
+  devServer: {
+    static: {
+      directory: path.join(__dirname, 'dist'),
+    },
+    compress: true,
+    port: 9000,
+    hot: true,
+    open: true,
+    historyApiFallback: true
   }
 };
