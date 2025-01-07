@@ -227,3 +227,20 @@ The Babel configuration can be found in the `babel.config.json` file.
 The project uses Webpack for bundling the JavaScript code and other assets. Webpack helps to optimize the code and manage dependencies, making the project more efficient and easier to maintain.
 
 The Webpack configuration can be found in the `webpack.config.js` file.
+
+## Generating Documentation
+
+The project uses JSDoc to generate documentation for the JavaScript code. JSDoc allows you to document your code using comments, and then generate an HTML documentation report.
+
+To generate the documentation, use the following command:
+
+```sh
+npm run generate-docs
+```
+
+The generated documentation will be available in the `out/` directory.
+
+## Deploying Documentation
+
+The GitHub Actions workflow is configured to generate and deploy the documentation to a sub-directory of the gh-pages branch during CI/CD. The documentation will be available at `https://<username>.github.io/gpx-traces-website/docs/`.
+
