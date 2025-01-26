@@ -274,6 +274,10 @@ The `getCoordinates` function in the `scripts/process-gpx.js` file was updated t
 
 Unit tests were added in the `tests/process-gpx.test.js` file to verify the simplification logic.
 
+## Cron Job for Deploying Last Tagged Version
+
+The deploy CI workflow now includes a cron job that deploys the last tagged version. The cron job is scheduled to run every Monday at 9 AM. This ensures that the latest tagged version is deployed to GitHub Pages on a regular basis. The cron job deploys the last tagged version only.
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
