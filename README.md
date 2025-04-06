@@ -6,6 +6,8 @@
 
 This repository contains the necessary code to process GPX files stored in a Google Drive folder as input and show the GPX traces on an interactive map.
 
+=> Read related blog post to see how this repository was built : [Creating a Node.js Website with GitHub Copilot Workspace Using Best Development Practices in R ](https://statnmap.com/2025-01-27-creating-a-website-in-node-js-with-github-copilot-workspace/)
+
 ## Categories
 
 When you upload your GPX file in the Google Drive, you need to properly name it, so that it is correctly colored on the website.
