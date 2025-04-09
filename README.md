@@ -286,6 +286,11 @@ The deploy CI workflow now includes a cron job that deploys the last tagged vers
 docker compose up
 ```
 
+- Clear the php cache inside the container
+```bash
+docker exec -w /var/www/html -it gpx-traces-website-php-php-apache-1 php bin/console cache:clear
+```
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
