@@ -291,6 +291,11 @@ docker compose up
 docker exec -w /var/www/html -it gpx-traces-website-php-php-apache-1 php bin/console cache:clear
 ```
 
+- delete everything and start over
+```bash
+docker compose down && docker volume prune -f && docker compose up --build -d
+```
+
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](LICENSE) file for details.
