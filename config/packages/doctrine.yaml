@@ -1,9 +1,7 @@
 doctrine:
     dbal:
-        driver: 'pdo_sqlite'
+        driver: 'pdo_pgsql'
         url: '%env(resolve:DATABASE_URL)%'
-        # Path to SQLite database file
-        path: '%kernel.project_dir%/var/data.db'
 
     orm:
         auto_generate_proxy_classes: true

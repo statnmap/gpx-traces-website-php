@@ -1,7 +1,8 @@
-
 services:
 ###> doctrine/doctrine-bundle ###
   database:
     ports:
       - "5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql:ro
 ###< doctrine/doctrine-bundle ###
