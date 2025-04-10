@@ -285,6 +285,10 @@ The deploy CI workflow now includes a cron job that deploys the last tagged vers
 ```bash
 docker compose up
 ```
+- Update dependencies in the container during dev
+```bash
+docker exec -w /var/www/html -it gpx-traces-website-php-php-apache-1 composer update
+```
 
 - Clear the php cache inside the container
 ```bash
@@ -295,6 +299,27 @@ docker exec -w /var/www/html -it gpx-traces-website-php-php-apache-1 php bin/con
 ```bash
 docker compose down && docker volume prune -f && docker compose up --build -d
 ```
+
+## Manual Database Initialization
+
+After starting the Docker containers, you need to manually initialize the database and load fixtures. Follow these steps:
+
+1. **Access the PHP container**:
+   ```bash
+   docker exec -it gpx-traces-website-php-php-apache-1 bash
+   ```
+
+2. **Create the database schema**:
+   ```bash
+   php /var/www/html/bin/console doctrine:schema:create
+   ```
+
+3. **Load the fixtures**:
+   ```bash
+   php /var/www/html/bin/console doctrine:fixtures:load --no-interaction
+   ```
+
+These steps only need to be performed once to set up the database for the application.
 
 ## License
 
