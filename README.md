@@ -304,17 +304,17 @@ docker compose down && docker volume prune -f && docker compose up --build -d
 
 After starting the Docker containers, you need to manually initialize the database and load fixtures. Follow these steps:
 
-1. **Access the PHP container**:
+-Access the PHP container:
    ```bash
    docker exec -it gpx-traces-website-php-php-apache-1 bash
    ```
 
-2. **Create the database schema**:
+- Create the database:
    ```bash
-   php /var/www/html/bin/console doctrine:schema:create
+   php /var/www/html/bin/console doctrine:database:create
    ```
 
-3. **Load the fixtures**:
+- Load the fixtures:
    ```bash
    php /var/www/html/bin/console doctrine:fixtures:load --no-interaction
    ```

@@ -1,0 +1,22 @@
+# Exclude original JavaScript application
+original-javascript-app/
+
+# Exclude common development/non-essential files
+.git/
+.github/
+.gitlab/
+.DS_Store
+.env.local
+.env.*.local
+
+# Cache and logs
+var/cache/*
+var/log/*
+.phpunit.result.cache
+
+# Vendor directories that will be reinstalled
+node_modules/
+
+# Docker files (optional, to avoid recursive copying)
+docker-compose.override.yml
+compose.override.yaml
