@@ -23,7 +23,10 @@ services:
     ports:
       - "8080:80"
     volumes:
-      - .:/var/www/html
+      - ./src:/var/www/html/src:rw
+      - ./config:/var/www/html/config:rw
+      - ./public:/var/www/html/public:rw
+      - ./bin:/var/www/html/bin:rw
     environment:
       - APACHE_DOCUMENT_ROOT=/var/www/html/public
     depends_on:
