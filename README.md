@@ -298,6 +298,8 @@ docker exec -w /var/www/html -it gpx-traces-website-php-php-apache-1 php bin/con
 - delete everything and start over
 ```bash
 docker compose down && docker volume prune -f && docker compose up --build -d
+# No prune
+docker compose down && docker compose up --build -d
 ```
 
 ## Manual Database Initialization

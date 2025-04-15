@@ -1,29 +1,37 @@
-version: '3.8'
-
 services:
   php-apache:
     build:
       context: .
-      dockerfile: Dockerfile
-    restart: unless-stopped
+      dockerfile: Dockerfile.dev
     ports:
       - "8080:80"
+    volumes:
+      # Mount source code for live development
+      - ./:/var/www/html:delegated
+      # Exclude vendor directory to prevent mounting issues
+      - /var/www/html/vendor
+      # Exclude var directory for better performance
+      - /var/www/html/var
     depends_on:
       database:
         condition: service_healthy
     environment:
-      APP_ENV: prod
+      APP_ENV: dev
       DATABASE_URL: "postgresql://app:!ChangeMe!@database:5432/app?serverVersion=16&charset=utf8"
+      XDEBUG_CONFIG: "client_host=host.docker.internal"
+      PHP_IDE_CONFIG: "serverName=gpx-traces-website"
     healthcheck:
       test: ["CMD", "curl", "-f", "http://localhost"]
-      interval: 30s
+      interval: 10s
       timeout: 5s
       retries: 3
       start_period: 30s
 
   database:
     image: postgres:16-alpine
-    restart: unless-stopped
+    ports:
+      # Expose port for direct database access
+      - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
       - ./init.sql:/docker-entrypoint-initdb.d
@@ -37,6 +45,15 @@ services:
       timeout: 5s
       retries: 5
       start_period: 10s
+
+  # Optional adminer for easy database management
+  adminer:
+    image: adminer
+    restart: always
+    ports:
+      - "8081:8080"
+    depends_on:
+      - database
 
 volumes:
   postgres_data:

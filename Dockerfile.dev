@@ -1,0 +1,54 @@
+# Development Dockerfile
+FROM php:8.3-apache
+
+# Install necessary system dependencies with additional dev tools
+RUN apt-get update && apt-get install -y \
+    libsqlite3-dev \
+    libpq-dev \
+    libzip-dev \
+    unzip \
+    git \
+    vim \
+    # Additional development utilities
+    postgresql-client \
+    # For debugging
+    iproute2
+
+# Install PHP extensions with additional dev extensions
+RUN docker-php-ext-install pdo pdo_pgsql zip \
+    && a2enmod rewrite
+
+# Install Xdebug for debugging (development only)
+RUN pecl install xdebug \
+    && docker-php-ext-enable xdebug
+
+# Set up Xdebug configuration
+RUN echo "xdebug.mode=debug" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_host=host.docker.internal" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini \
+    && echo "xdebug.client_port=9003" >> /usr/local/etc/php/conf.d/docker-php-ext-xdebug.ini
+
+# Clean up apt cache
+RUN rm -rf /var/lib/apt/lists/*
+
+# Set the DocumentRoot to the public directory
+RUN sed -i 's|DocumentRoot /var/www/html|DocumentRoot /var/www/html/public|' /etc/apache2/sites-available/000-default.conf
+
+# Install Composer
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+# Configure Symfony Flex to allow contributed recipes
+RUN composer config --global extra.symfony.allow-contrib true
+
+# Set up the working directory
+WORKDIR /var/www/html
+
+# Install Symfony CLI for development convenience
+RUN curl -1sLf 'https://dl.cloudsmith.io/public/symfony/stable/setup.deb.sh' | bash \
+    && apt-get install -y symfony-cli
+
+# Note: We don't copy application files here because in dev we'll use volume mounting
+# Set permissions for the web server
+RUN chown -R www-data:www-data /var/www/html
+
+# Apache runs on port 80
+EXPOSE 80
