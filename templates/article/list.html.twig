@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Blog Articles</title>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                line-height: 1.6;
+                margin: 0;
+                padding: 20px;
+                max-width: 800px;
+                margin: 0 auto;
+            }
+            h1 {
+                border-bottom: 1px solid #ddd;
+                padding-bottom: 10px;
+            }
+            ul {
+                list-style-type: none;
+                padding: 0;
+            }
+            li {
+                margin-bottom: 10px;
+                padding: 10px;
+                background-color: #f9f9f9;
+                border-radius: 4px;
+            }
+            a {
+                color: #0066cc;
+                text-decoration: none;
+            }
+            a:hover {
+                text-decoration: underline;
+            }
+            .empty-message {
+                color: #666;
+                font-style: italic;
+            }
+            .create-new {
+                margin-top: 20px;
+                padding: 10px;
+                background-color: #e7f3ff;
+                border-radius: 4px;
+            }
+        </style>
+    </head>
+    <body>
+        <h1>Blog Articles</h1>
+        
+        {% if articles|length > 0 %}
+            <ul>
+                {% for article in articles %}
+                    <li>
+                        <a href="{{ path('article_show', {'id': article.id}) }}">
+                            {{ article.title }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p class="empty-message">No articles found. Create your first article!</p>
+        {% endif %}
+        
+        <div class="create-new">
+            <p>Want to add a new article? <a href="{{ path('create_article') }}">Create one now</a></p>
+        </div>
+    </body>
+</html>

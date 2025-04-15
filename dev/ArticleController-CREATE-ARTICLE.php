@@ -3,7 +3,6 @@
 namespace App\Controller;
 
 use App\Entity\Article;
-use App\Repository\ArticleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -11,17 +10,7 @@ use Symfony\Component\Routing\Attribute\Route;
 
 class ArticleController extends AbstractController
 {
-    #[Route('/article', name: 'article_list')]
-    public function list(ArticleRepository $articleRepository): Response
-    {
-        $articles = $articleRepository->findAll();
-
-        return $this->render('article/list.html.twig', [
-            'articles' => $articles,
-        ]);
-    }
-
-    #[Route('/article/create', name: 'create_article')]
+    #[Route('/article', name: 'create_article')]
     public function createArticle(EntityManagerInterface $entityManager): Response
     {
         $article = new Article();
@@ -36,13 +25,14 @@ class ArticleController extends AbstractController
         $entityManager->flush();
 
         return new Response('Saved new article with id '.$article->getId());
+
+        // ...
     }
-    
-    #[Route('/article/{id}', name: 'article_show')]
-    public function show(Article $article): Response
-    {
-        return $this->render('article/show.html.twig', [
-            'article' => $article,
-        ]);
-    }
+    // public function index(): JsonResponse
+    // {
+    //     return $this->json([
+    //         'message' => 'Welcome to your new controller!',
+    //         'path' => 'src/Controller/ArticleController.php',
+    //     ]);
+    // }
 }
